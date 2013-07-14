@@ -14,8 +14,8 @@ if len(sys.argv)>1 :
         MINLENGTH = int(sys.argv[1])
     except:
         pass
-    
-briefingUrl = "https://briefing.nextjump.com/?feed=rss2"
+
+briefingUrl = ""
 briefConn = urlopen(briefingUrl)
 briefing = briefConn.read()
 
