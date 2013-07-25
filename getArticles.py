@@ -1,6 +1,5 @@
-#!/usr/bin/python
 
-from BeautifulSoup import BeautifulSoup, NavigableString, BeautifulStoneSoup
+from bs4 import BeautifulSoup, NavigableString
 from urllib import urlopen
 from ununicode import toascii
 from datetime import datetime, timedelta
@@ -15,14 +14,8 @@ if len(sys.argv)>1 :
     except:
         pass
 
-briefingUrl = ""
-briefConn = urlopen(briefingUrl)
-briefing = briefConn.read()
-
-soup = BeautifulStoneSoup(briefing, convertEntities=BeautifulSoup.HTML_ENTITIES)
-
 def strip_tags(html):
-    soup = BeautifulSoup(html, convertEntities=BeautifulSoup.HTML_ENTITIES)
+    soup = BeautifulSoup(html)
 
     for tag in soup.findAll(True):
         s = ""
@@ -54,7 +47,7 @@ class Article :
         self.category = toascii(unicode(item.category.string))
         self.content = ''
         paragraphs = item.find('content:encoded')
-        paragraphs = BeautifulSoup(unicode(paragraphs.string), convertEntities=BeautifulSoup.HTML_ENTITIES).findAll('p')
+        paragraphs = BeautifulSoup(unicode(paragraphs.string)).findAll('p')
         i = 0
         h = HTMLParser()
         while len(self.content)<MINLENGTH and i<len(paragraphs) :
@@ -83,12 +76,4 @@ class Article :
             + texify(self.contributor) + "|" \
             + texify(self.content)
 
-articles = []
 
-for item in  soup.findAll('item', limit=5) :
-    articles.append(Article(item))
-
-print "URL|Title|Category|Contributor|Text"
-
-for article in articles :
-    print article.csv()
