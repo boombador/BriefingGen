@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from csv import *
 import re
 from cgi import escape
-
 import pprint
 
 numPractices = 0
@@ -135,9 +134,7 @@ def printBriefingHTML(articles, cfg) :
         print """
                 <tr>
                     <td width="100%">
-                    """
-        printArticleHTML(row.category, row.contributor, row.text, row.title, row.url)
-        print """
+                    """ + row.getHTML() + """
                     </td>
                 </tr>"""
     print """
@@ -154,102 +151,4 @@ def printBriefingHTML(articles, cfg) :
             </table>
         </td></tr>
     </table>"""
-
-     
-def printArticleHTML(categoryName, submitterName, articleText, articleTitle="", linkUrl="") :
-    imgsrc = 'https://imga.nxjimg.com/secured/image/briefing/'
-    isDailyTeaching = False
-    barColor = "#f47321"
-    backgroundColor="#f4f5f4"
-
-    if ('Technology News' == categoryName) :
-        imgsrc += 'technology.jpg'
-    elif ('eCommerce News' == categoryName) :
-        imgsrc = 'http://imgb.nxjimg.com/emp_image/dailybriefing/ecommerce.png'
-    elif ('eCommerce News' == categoryName) :
-        imgsrc = 'http://imgb.nxjimg.com/emp_image/dailybriefing/ecommerce.png'
-    elif ('STEM Education' == categoryName) :
-        imgsrc += 'technology.jpg'
-    elif ('Wellness' == categoryName) :
-        imgsrc += 'wellness.jpg'
-        barColor = '#4bc23b'
-        backgroundColor = '#dcf9d8'
-    elif ('Marketing' == categoryName) :
-        imgsrc += 'marketing.jpg'
-    elif ('Design' == categoryName) :
-        imgsrc += 'design.jpg '
-    elif ('Next Jump Teachings' == categoryName) :
-        imgsrc += 'dteaching.jpg'
-        isDailyTeaching = True
-    elif ('Bigger Hearts' == categoryName) :
-        imgsrc = 'http://imgb.nxjimg.com/emp_image/dailybriefing/heart.png'
-        barColor = '#ED0C31'
-    else :
-        imgsrc += 'marketing.jpg'
-
-    print """
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-        <tr height="30" bgcolor=\"""" + barColor + """" class="articleBar">
-            <td width="36">
-                <img src=\"""" + imgsrc + """" width="36" height="30">
-            </td>
-            <td width="100%" style="color: white; font-family: Calibri;" class="articleBarText">
-                <b>""" + categoryName.upper() + """</b>"""
-    if not isDailyTeaching :
-        print """ - submitted by """ + submitterName
-    print """
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" bgcolor=\"""" + backgroundColor + """">
-                <div class="articleBoxWrapper">
-                    <div class="articleBox">"""
-
-    print """
-                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                            <tr height="10" class="articleBoxTopSpacer">
-                                <td colspan="3"></td>
-                            </tr>"""
-    if articleTitle :
-        print """
-                            <tr><!-- Title row, not always needed -->
-                                <td width="15"></td>
-                                <td align="left" style="font-size: 18px; font-weight: 700;" class="articleTitle">""" + articleTitle + """</td>
-                                <td width="15"></td>
-                            </tr>
-                            <tr height="5">
-                            </tr>"""
-    print """
-                            <tr>
-                                <td width="15"></td>
-                                <td>""" + articleText + """</td>
-                                <td width="15"></td>
-                            </tr>
-                            <tr height="10" class="readMoreLink">
-                                <td colspan="3"></td>
-                            </tr>
-                            <tr"""
-    if not isDailyTeaching :
-        print """ class="readMoreLink\""""
-
-    print """>
-                                <td></td>
-                                <td align="left">"""
-    if isDailyTeaching :
-        print submitterName
-    else : 
-        print """<a href=\"""" + linkUrl + """">Read More</a>"""
-    print """
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr height="20" class="articleBoxBottomSpacer">
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </table>
-    """
 

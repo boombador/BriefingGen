@@ -33,14 +33,6 @@ articles = []
 for item in  soup.findAll('item', limit=5) :
     articles.append(Article(item))
 
-for article in articles :
-    print article
-
-# print "URL|Title|Category|Contributor|Text"
-
-# for article in articles :
-    # print(article.csv())
-
 currdate = datetime.now().strftime('%Y%m%d')
 
 # dp = DictReader(open('DailyPractice' + currdate + '.csv', "rb"), delimiter="|")
@@ -56,4 +48,4 @@ currdate = datetime.now().strftime('%Y%m%d')
 
 # static = stat.next()
 
-# printBriefingHTML(articles, cfg)
+printBriefingHTML(articles, cfg)
