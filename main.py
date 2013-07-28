@@ -6,8 +6,6 @@ config = ConfigParser.ConfigParser()
 config.read("categories.conf")
 defaults = config.options("Default")
 
-
-
 briefingUrl = "https://briefing.nextjump.com/?feed=rss2"
 briefConn = urlopen(briefingUrl)
 briefing = briefConn.read()
