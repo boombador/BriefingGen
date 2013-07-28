@@ -1,7 +1,7 @@
 
 from Article import *
-from getArticles import *
 import ConfigParser
+from urllib import urlopen
 
 cfg = ConfigParser.ConfigParser()
 cfg.read("static.conf")
