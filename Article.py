@@ -67,3 +67,17 @@ class Article :
             + texify(self.contributor) + "|" \
             + texify(self.content)
 
+    def category(self) :
+        return self.category
+
+    def contributor(self) :
+        return self.contributor
+
+    def title(self) :
+        return self.title
+
+    def text(self) :
+        return self.content
+
+    def url(self) :
+        return self.href

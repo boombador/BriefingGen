@@ -6,6 +6,8 @@ from cgi import escape
 
 import pprint
 
+numPractices = 0
+
 def detexify(str) :
     simpleEscaped = re.compile(r'\\([#$%&~_^{}|])')
     mathEscaped = re.compile(r'\$([<>])\$')
@@ -14,25 +16,11 @@ def detexify(str) :
     str = str.replace('\\textbacklash', '\\')
     return str
 
-currdate = datetime.now().strftime('%Y%m%d')
-
-dp = DictReader(open('DailyPractice' + currdate + '.csv', "rb"), delimiter="|")
-articles = DictReader(open('Articles' + currdate + '.csv', "rb"), delimiter="|")
-stat = DictReader(open('StaticData.csv', "rb"), delimiter="|")
-
-#parse the dictreader, this way we can know how many practices we have before printing them
-dailyPractices = []
-for row in dp :
-    prac = { "Category": escape(detexify(row['Category'])), 'Contributor': escape(detexify(row['Contributor'])), 'Text': escape(detexify(row['Practice'])), 'URL': escape(detexify(row['Link_URL'])) }
-    dailyPractices.append(prac)
-numPractices = len(dailyPractices)
-
-static = stat.next()
     
 def hexColor(str) :
     return "#%02X%02X%02X" % tuple([int(num) for num in str.split()])
 
-def printBriefingHTML(articles) :
+def printBriefingHTML(articles, cfg) :
     print """
     <style>
     @media screen {
@@ -98,7 +86,7 @@ def printBriefingHTML(articles) :
                 <tr>
                     <td width="200" style="font-family: Calibri;">
                         """ + datetime.now().strftime('%B %d, %Y') + """<br/>
-                        Daily Briefing: """ + escape(detexify(static['CVerb']))  + " by " + escape(detexify(static['Compiler'])) +"""<br/>
+                        Daily Briefing: """ + cfg.get("static", "CVerb")  + " by " + cfg.get("static", "Compiler") +"""<br/>
                         <a href="https://briefing.nextjump.com/">Daily Briefing Site</a><br/>
                         <a href="https://wiki.nextjump.com/wiki/index.php/Daily_Briefing">Daily Briefing Wiki</a>
                     </td>
@@ -148,7 +136,7 @@ def printBriefingHTML(articles) :
                 <tr>
                     <td width="100%">
                     """
-        printArticleHTML(escape(detexify(row['Category'])), escape(detexify(row['Contributor'])), escape(detexify(row['Text'])), escape(detexify(row['Title'])), escape(detexify(row['URL'])))
+        printArticleHTML(row.category, row.contributor, row.text, row.title, row.url)
         print """
                     </td>
                 </tr>"""
@@ -265,4 +253,3 @@ def printArticleHTML(categoryName, submitterName, articleText, articleTitle="", 
     </table>
     """
 
-printBriefingHTML(articles)
