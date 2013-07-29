@@ -7,14 +7,11 @@ import re
 from cgi import escape
 import pprint
 
-
 # yes
 from CustomEntry import *
 from Article import *
 from bs4 import BeautifulSoup
 from urllib import urlopen
-
-numPractices = 0
 
 def detexify(str) :
     simpleEscaped = re.compile(r'\\([#$%&~_^{}|])')
@@ -37,10 +34,10 @@ class Briefing :
 
         soup = BeautifulSoup(briefing)
         self.articles = []
+        self.entries = []
 
         entryList = CustomEntry(cfg.get("static", "entriesFile"))
-        entry = entryList.getEntry()
-        self.articles.append(entry)
+        self.entries.append(entryList.loadEntry())
 
         # scrape wordpress
         for item in  soup.findAll('item', limit=5) :
@@ -128,14 +125,13 @@ class Briefing :
                 </table>
                 <table border="0" cellpadding="0" cellspacing="0" width="100%">"""
                 
-        if numPractices > 0 :
-            if numPractices == 1 :
+        if len(self.entries) > 0 :
+            if len(self.entries) == 1 :
+                row = self.entries[0]
                 html += """
                     <tr><!-- begin dp section -->
-                        <td width="100%">"""
-                row = dailyPractices[0]
-                printArticleHTML(row['Category'], row['Contributor'], row['Text'], '', row['URL'])
-                html += """
+                        <td width="100%">
+                            """ + row.getHTML(cfg ) + """
                         </td>
                     </tr>"""
             else :
@@ -145,13 +141,13 @@ class Briefing :
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr valign="top">
                                     <td width="30%">"""
-                row = dailyPractices[0]
+                row = self.entries[0]
                 printArticleHTML(row['Category'], row['Contributor'], row['Text'], '', row['URL'])
                 html += """
                                     </td>
                                     <td width="2%"></td>
                                     <td width="68%">"""
-                row = dailyPractices[1]
+                row = self.entries[1]
                 printArticleHTML(row['Category'], row['Contributor'], row['Text'], '', row['URL'])
                 html += """
                                     </td>
@@ -160,13 +156,14 @@ class Briefing :
                         </td>
                     </tr>"""
 
-        for row in articles :
-            html += """
-                    <tr>
-                        <td width="100%">
-                        """ + row.getHTML(cfg) + """
-                        </td>
-                    </tr>"""
+
+        # for row in articles :
+            # html += """
+                    # <tr>
+                        # <td width="100%">
+                        # """ + row.getHTML(cfg) + """
+                        # </td>
+                    # </tr>"""
         html += """
                 </table>
             <!-- Footer table-->

@@ -7,9 +7,6 @@ cfg.read("static.conf")
 cfg.read("categories.conf")
 brief = Briefing(cfg)
 
-# dp = DictReader(open('DailyPractice' + currdate + '.csv', "rb"), delimiter="|")
-# stat = DictReader(open('StaticData.csv', "rb"), delimiter="|")
-
 #parse the dictreader, this way we can know how many practices we have before printing them
 # dailyPractices = []
 # for row in dp :

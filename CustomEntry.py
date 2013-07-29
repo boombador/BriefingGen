@@ -45,7 +45,7 @@ class CustomEntry :
 
         self.sheet = ceSheet
 
-    def getEntry(self) :
+    def loadEntry(self) :
         row = 1
         displayRows = []
         backupRow = 0
@@ -69,7 +69,6 @@ class CustomEntry :
             print >> stderr, "WARNING: Today's Daily Practice not found - checked %d rows for \"%s\"" % (row, currdate)
             displayRows.append(backupRow)
 
-        # print "Contributor|Practice|Category|Link_URL"
         for row in displayRows :
             name =  texify(toascii(ceSheet.cell_value(row, self.nameCol)))
             practice =  texify(re.compile(r'\r?\n').sub(' ', toascii(ceSheet.cell_value(row, self.quoteCol))))
@@ -77,8 +76,7 @@ class CustomEntry :
             if not category :
                 category = 'Next Jump Teachings'
             url = texify(toascii(ceSheet.cell_value(row, self.urlCol)))
-            #print name + "|" + practice + "|" + category + "|" + url
-        return Article( "Daily Teaching", name, category, practice, url, None)
+        self.article = Article("", name, category, practice, url, None)
 
 #
 #if (nameCol + quoteCol) * (nameCol + pubCol) * (quoteCol + pubCol) == 0 :

@@ -30,7 +30,6 @@ def texify(str) :
     return str
 
 class Article :
-
     def __init__(self, title, contributor, category, content, href, xml) :
         self.title = title
         self.contributor = contributor
@@ -88,48 +87,43 @@ class Article :
         return self.href
 
     def getHTML(self, cfg) :
-        # def printArticleHTML(categoryName, submitterName, articleText, articleTitle="", linkUrl="") :
         categoryName = self.category
         submitterName = self.contributor
         articleText = self.content
         articleTitle = self.title
         linkUrl = self.href
 
-        imgsrc = 'https://imga.nxjimg.com/secured/image/briefing/'
-        isDailyTeaching = False
-        barColor = "#f47321"
-        backgroundColor="#f4f5f4"
+        imgbaseurl = 'https://imga.nxjimg.com/secured/image/briefing/'
+        img = 'marketing.jpg'
 
-        if ('Technology News' == categoryName) :
-            imgsrc += 'technology.jpg'
-        elif ('eCommerce News' == categoryName) :
-            imgsrc = 'http://imgb.nxjimg.com/emp_image/dailybriefing/ecommerce.png'
-        elif ('eCommerce News' == categoryName) :
-            imgsrc = 'http://imgb.nxjimg.com/emp_image/dailybriefing/ecommerce.png'
-        elif ('STEM Education' == categoryName) :
-            imgsrc += 'technology.jpg'
-        elif ('Wellness' == categoryName) :
-            imgsrc += 'wellness.jpg'
-            barColor = '#4bc23b'
-            backgroundColor = '#dcf9d8'
-        elif ('Marketing' == categoryName) :
-            imgsrc += 'marketing.jpg'
-        elif ('Design' == categoryName) :
-            imgsrc += 'design.jpg '
-        elif ('Next Jump Teachings' == categoryName) :
-            imgsrc += 'dteaching.jpg'
-            isDailyTeaching = True
-        elif ('Bigger Hearts' == categoryName) :
-            imgsrc = 'http://imgb.nxjimg.com/emp_image/dailybriefing/heart.png'
-            barColor = '#ED0C31'
-        else :
-            imgsrc += 'marketing.jpg'
+        barColor = cfg.get("Default", "barColor")
+        backgroundColor = cfg.get("Default", "backgroundColor")
+        isDailyTeaching = cfg.get("Default", "isDailyTeaching")
+        imgBaseUrl = cfg.get("Default", "imBaseUrl")
+        img = cfg.get("Default", "img")
+
+        if cfg.has_section(categoryName):
+            for option in cfg.options(categoryName) :
+                val = cfg.get(categoryName, option)
+                if option == "barColor":
+                    barColor = val
+                elif option == "backgroundColor":
+                    backgroundColor = val
+                elif option == "isDailyTeaching":
+                    isDailyTeaching = val
+                elif option == "imgBaseUrl":
+                    imgBaseUrl = val
+                elif option == "img":
+                    img = val
+
+        isDailyTeaching = true;
+        imgurl = imgbaseurl + img
 
         html = """
         <table border="0" cellpadding="0" cellspacing="0" width="100%">
             <tr height="30" bgcolor=\"""" + barColor + """" class="articleBar">
                 <td width="36">
-                    <img src=\"""" + imgsrc + """" width="36" height="30">
+                    <img src=\"""" + imgurl + """" width="36" height="30">
                 </td>
                 <td width="100%" style="color: white; font-family: Calibri;" class="articleBarText">
                     <b>""" + categoryName.upper() + """</b>"""
