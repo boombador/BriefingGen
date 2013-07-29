@@ -43,13 +43,10 @@ class Article :
         h = HTMLParser()
         while len(self.content)<MINLENGTH and i<len(paragraphs) :
             toAdd = h.unescape(toascii(unicode(strip_tags(unicode(paragraphs[i])))).strip()) 
-                #Gotta Unescape yer HTMLEntities before you can Escape them!
             if len(toAdd) > 0 :
                 self.content = self.content + ' ' + toAdd
             i+=1
-        #self.content = self.content.replace('\n', ' ')
         self.content = re.compile(r'\r?\n').sub(' ', self.content)
-        #print i, len(self.content), len(paragraphs)
         self.xml = item
 
     def __str__(self) :
