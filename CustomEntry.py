@@ -77,6 +77,7 @@ class CustomEntry :
                 category = 'Next Jump Teachings'
             url = texify(toascii(ceSheet.cell_value(row, self.urlCol)))
         self.article = Article("", name, category, practice, url, None)
+        return self.article
 
 #
 #if (nameCol + quoteCol) * (nameCol + pubCol) * (quoteCol + pubCol) == 0 :

@@ -93,7 +93,7 @@ class Article :
         articleTitle = self.title
         linkUrl = self.href
 
-        imgbaseurl = 'https://imga.nxjimg.com/secured/image/briefing/'
+        imgBaseUrl = 'https://imga.nxjimg.com/secured/image/briefing/'
         img = 'marketing.jpg'
 
         barColor = cfg.get("Default", "barColor")
@@ -103,21 +103,21 @@ class Article :
         img = cfg.get("Default", "img")
 
         if cfg.has_section(categoryName):
-            for option in cfg.options(categoryName) :
+            options = cfg.options(categoryName)
+            for option in options :
                 val = cfg.get(categoryName, option)
-                if option == "barColor":
+                if option == "barcolor":
                     barColor = val
-                elif option == "backgroundColor":
+                elif option == "backgroundcolor":
                     backgroundColor = val
-                elif option == "isDailyTeaching":
+                elif option == "isdailyteaching":
                     isDailyTeaching = val
-                elif option == "imgBaseUrl":
+                elif option == "imgbaseurl":
                     imgBaseUrl = val
                 elif option == "img":
                     img = val
 
-        isDailyTeaching = true;
-        imgurl = imgbaseurl + img
+        imgurl = imgBaseUrl + img
 
         html = """
         <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -127,7 +127,7 @@ class Article :
                 </td>
                 <td width="100%" style="color: white; font-family: Calibri;" class="articleBarText">
                     <b>""" + categoryName.upper() + """</b>"""
-        if not isDailyTeaching :
+        if isDailyTeaching == 'False':
             html += """ - submitted by """ + submitterName
         html += """
                 </td>
@@ -161,13 +161,13 @@ class Article :
                                     <td colspan="3"></td>
                                 </tr>
                                 <tr"""
-        if not isDailyTeaching :
+        if isDailyTeaching == 'False':
             html += """ class="readMoreLink\""""
 
         html += """>
                                     <td></td>
                                     <td align="left">"""
-        if isDailyTeaching :
+        if isDailyTeaching == 'True':
             html += submitterName
         else : 
             html += """<a href=\"""" + linkUrl + """">Read More</a>"""

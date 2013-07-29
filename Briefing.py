@@ -33,13 +33,13 @@ class Briefing :
         briefing = briefConn.read()
 
         soup = BeautifulSoup(briefing)
-        self.articles = []
         self.entries = []
+        entryFileName = cfg.get("static", "entriesFile")
+        entryList = CustomEntry(entryFileName)
+        todaysEntry = entryList.loadEntry()
+        self.entries.append(todaysEntry)
 
-        entryList = CustomEntry(cfg.get("static", "entriesFile"))
-        self.entries.append(entryList.loadEntry())
-
-        # scrape wordpress
+        self.articles = []
         for item in  soup.findAll('item', limit=5) :
             self.articles.append(Article.from_item(item))
 
@@ -131,39 +131,33 @@ class Briefing :
                 html += """
                     <tr><!-- begin dp section -->
                         <td width="100%">
-                            """ + row.getHTML(cfg ) + """
+                            """ + row.getHTML(cfg) + """
                         </td>
                     </tr>"""
             else :
+                row1 = self.entries[0]
+                row2 = self.entries[1]
                 html += """
                     <tr><!-- more than 1 daily practice -->
                         <td width="100%">
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr valign="top">
-                                    <td width="30%">"""
-                row = self.entries[0]
-                printArticleHTML(row['Category'], row['Contributor'], row['Text'], '', row['URL'])
-                html += """
-                                    </td>
+                                    <td width="30%">""" + row1.getHTML(cfg) + """</td>
                                     <td width="2%"></td>
-                                    <td width="68%">"""
-                row = self.entries[1]
-                printArticleHTML(row['Category'], row['Contributor'], row['Text'], '', row['URL'])
-                html += """
-                                    </td>
+                                    <td width="68%">""" + row2.getHTML(cfg) + """ </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>"""
 
 
-        # for row in articles :
-            # html += """
-                    # <tr>
-                        # <td width="100%">
-                        # """ + row.getHTML(cfg) + """
-                        # </td>
-                    # </tr>"""
+        for row in articles :
+            html += """
+                    <tr>
+                        <td width="100%">
+                        """ + row.getHTML(cfg) + """
+                        </td>
+                    </tr>"""
         html += """
                 </table>
             <!-- Footer table-->
