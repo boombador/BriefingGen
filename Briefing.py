@@ -43,6 +43,9 @@ class Briefing :
         for item in  soup.findAll('item', limit=5) :
             self.articles.append(Article.from_item(item))
 
+    def getFileName(self) :
+        return "BriefingEmail" + self.date + ".html"
+
     def printBriefingHTML(self) :
         articles = self.articles
         cfg = self.cfg
