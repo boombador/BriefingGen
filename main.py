@@ -18,3 +18,7 @@ f.close()
 archive = cfg.get("static", "archiveDir")
 shutil.copy(briefingFile, archive)
 
+print "Newsletter saved as " + briefingFile
+print "Newsletter generated successfully, please press enter to terminate program"
+raw_input()
+

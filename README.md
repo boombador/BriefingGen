@@ -1,2 +1,4 @@
-BriefingGen
+NewsBetter
 ===========
+
+A lightweight email newsletter generator.
