@@ -28,6 +28,7 @@ def hexColor(str) :
 
 class Briefing :
     def __init__(self, cfg) : 
+        self.date = datetime.now().strftime('%Y%m%d')
         self.cfg = cfg
         url = cfg.get("static", "briefingUrl")
         briefConn = urlopen(url)
@@ -35,14 +36,14 @@ class Briefing :
 
         soup = BeautifulSoup(briefing)
         self.articles = []
-
         for item in  soup.findAll('item', limit=5) :
             self.articles.append(Article(item))
 
     def printBriefingHTML(self) :
         articles = self.articles
         cfg = self.cfg
-        print """
+
+        html = """
         <style>
         @media screen {
             .overflowEllipsis {
@@ -122,16 +123,16 @@ class Briefing :
                 
         if numPractices > 0 :
             if numPractices == 1 :
-                print """
+                html += """
                     <tr><!-- begin dp section -->
                         <td width="100%">"""
                 row = dailyPractices[0]
                 printArticleHTML(row['Category'], row['Contributor'], row['Text'], '', row['URL'])
-                print """
+                html += """
                         </td>
                     </tr>"""
             else :
-                print """
+                html += """
                     <tr><!-- more than 1 daily practice -->
                         <td width="100%">
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -139,13 +140,13 @@ class Briefing :
                                     <td width="30%">"""
                 row = dailyPractices[0]
                 printArticleHTML(row['Category'], row['Contributor'], row['Text'], '', row['URL'])
-                print """
+                html += """
                                     </td>
                                     <td width="2%"></td>
                                     <td width="68%">"""
                 row = dailyPractices[1]
                 printArticleHTML(row['Category'], row['Contributor'], row['Text'], '', row['URL'])
-                print """
+                html += """
                                     </td>
                                 </tr>
                             </table>
@@ -153,13 +154,13 @@ class Briefing :
                     </tr>"""
 
         for row in articles :
-            print """
+            html += """
                     <tr>
                         <td width="100%">
-                        """ + row.getHTML() + """
+                        """ + row.getHTML(cfg) + """
                         </td>
                     </tr>"""
-        print """
+        html += """
                 </table>
             <!-- Footer table-->
                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -173,4 +174,5 @@ class Briefing :
                 </table>
             </td></tr>
         </table>"""
+        return html
 

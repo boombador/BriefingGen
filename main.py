@@ -4,15 +4,8 @@ import ConfigParser
 
 cfg = ConfigParser.ConfigParser()
 cfg.read("static.conf")
-
-from makeHtml import *
-
-categories = ConfigParser.ConfigParser()
-categories.read("categories.conf")
-
+cfg.read("categories.conf")
 brief = Briefing(cfg)
-
-currdate = datetime.now().strftime('%Y%m%d')
 
 # dp = DictReader(open('DailyPractice' + currdate + '.csv', "rb"), delimiter="|")
 # stat = DictReader(open('StaticData.csv', "rb"), delimiter="|")
@@ -24,4 +17,5 @@ currdate = datetime.now().strftime('%Y%m%d')
     # dailyPractices.append(prac)
 # numPractices = len(dailyPractices)
 
-brief.printBriefingHTML()
+f = open("DailyBriefing.html", "w")
+f.write(brief.printBriefingHTML())

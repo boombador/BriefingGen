@@ -77,7 +77,7 @@ class Article :
     def url(self) :
         return self.href
 
-    def getHTML(self) :
+    def getHTML(self, cfg) :
         # def printArticleHTML(categoryName, submitterName, articleText, articleTitle="", linkUrl="") :
         categoryName = self.category
         submitterName = self.contributor
