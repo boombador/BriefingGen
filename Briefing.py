@@ -9,6 +9,7 @@ import pprint
 
 
 # yes
+from CustomEntry import *
 from Article import *
 from bs4 import BeautifulSoup
 from urllib import urlopen
@@ -36,8 +37,14 @@ class Briefing :
 
         soup = BeautifulSoup(briefing)
         self.articles = []
+
+        entryList = CustomEntry(cfg.get("static", "entriesFile"))
+        entry = entryList.getEntry()
+        self.articles.append(entry)
+
+        # scrape wordpress
         for item in  soup.findAll('item', limit=5) :
-            self.articles.append(Article(item))
+            self.articles.append(Article.from_item(item))
 
     def printBriefingHTML(self) :
         articles = self.articles

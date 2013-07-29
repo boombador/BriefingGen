@@ -30,24 +30,34 @@ def texify(str) :
     return str
 
 class Article :
-    def __init__(self, item) :
+
+    def __init__(self, title, contributor, category, content, href, xml) :
+        self.title = title
+        self.contributor = contributor
+        self.category = category
+        self.content = content
+        self.href = href
+
+    @classmethod
+    def from_item(cls, item) :
         global MINLENGTH
-        self.title = toascii(unicode(item.title.string))
-        self.contributor = toascii(unicode(item.find('dc:creator').string))
-        self.href = toascii(unicode(item.link.string))
-        self.category = toascii(unicode(item.category.string))
-        self.content = ''
+        title = toascii(unicode(item.title.string))
+        contributor = toascii(unicode(item.find('dc:creator').string))
+        href = toascii(unicode(item.link.string))
+        category = toascii(unicode(item.category.string))
+        content = ''
         paragraphs = item.find('content:encoded')
         paragraphs = BeautifulSoup(unicode(paragraphs.string)).findAll('p')
         i = 0
         h = HTMLParser()
-        while len(self.content)<MINLENGTH and i<len(paragraphs) :
+        while len(content)<MINLENGTH and i<len(paragraphs) :
             toAdd = h.unescape(toascii(unicode(strip_tags(unicode(paragraphs[i])))).strip()) 
             if len(toAdd) > 0 :
-                self.content = self.content + ' ' + toAdd
+                content = content + ' ' + toAdd
             i+=1
-        self.content = re.compile(r'\r?\n').sub(' ', self.content)
-        self.xml = item
+        content = re.compile(r'\r?\n').sub(' ', content)
+        xml = item
+        return cls(title, contributor, category, content, href, xml)
 
     def __str__(self) :
         return self.href + ": (" \
