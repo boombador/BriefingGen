@@ -1,7 +1,6 @@
 
-from Article import *
+from Briefing import *
 import ConfigParser
-from urllib import urlopen
 
 cfg = ConfigParser.ConfigParser()
 cfg.read("static.conf")
@@ -11,15 +10,7 @@ from makeHtml import *
 categories = ConfigParser.ConfigParser()
 categories.read("categories.conf")
 
-url = cfg.get("static", "briefingUrl")
-briefConn = urlopen(url)
-briefing = briefConn.read()
-
-soup = BeautifulSoup(briefing)
-articles = []
-
-for item in  soup.findAll('item', limit=5) :
-    articles.append(Article(item))
+brief = Briefing(cfg)
 
 currdate = datetime.now().strftime('%Y%m%d')
 
@@ -33,4 +24,4 @@ currdate = datetime.now().strftime('%Y%m%d')
     # dailyPractices.append(prac)
 # numPractices = len(dailyPractices)
 
-printBriefingHTML(articles, cfg)
+brief.printBriefingHTML()
