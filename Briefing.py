@@ -117,13 +117,13 @@ class Briefing :
                 <!-- Header section table -->
                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
-                        <td width="200" style="font-family: Calibri;">
+                        <td width="480" style="font-family: Calibri;">
                             """ + datetime.now().strftime('%B %d, %Y') + """<br/>
                             Daily Briefing: """ + cfg.get("static", "CVerb")  + " by " + cfg.get("static", "Compiler") +"""<br/>
                             <a href="https://briefing.nextjump.com/">Daily Briefing Site</a><br/>
                             <a href="https://wiki.nextjump.com/wiki/index.php/Daily_Briefing">Daily Briefing Wiki</a>
                         </td>
-                        <td width="760" valign="middle" align="right">
+                        <td width="480" valign="middle" align="right">
                             <img src="https://imga.nxjimg.com/secured/image/briefing/dblogo.jpg" width="300" height="65">
                         </td>
                     </tr>
