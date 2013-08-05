@@ -1,7 +1,7 @@
 
 from Briefing import *
 import ConfigParser
-import shutil
+import os
 
 cfg = ConfigParser.ConfigParser()
 cfg.read("static.conf")
@@ -9,16 +9,26 @@ cfg.read("categories.conf")
 brief = Briefing(cfg)
 
 html = brief.printBriefingHTML()
-briefingFile = brief.getFileName()
 
+briefingFile = brief.getFileName()
 f = open(briefingFile, "w")
+print "Writing briefing to file: " + briefingFile
 f.write(html)
 f.close()
 
+# get archive dir, create it if not existent
 archive = cfg.get("static", "archiveDir")
-shutil.copy(briefingFile, archive)
+if not os.path.exists(archive):
+    os.makedirs(archive)
+os.chdir(archive)
+print "Moving to archive directory: " + archive
 
-print "Newsletter saved as " + briefingFile
-print "Newsletter generated successfully, please press enter to terminate program"
+briefingFile = brief.getFileName(True)
+f = open(briefingFile, "w")
+print "Writing briefing to file: " + briefingFile
+f.write(html)
+f.close()
+
+print "Newsletter generated successfully, please press enter to terminate program..."
 raw_input()
 
