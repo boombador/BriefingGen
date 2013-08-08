@@ -101,6 +101,7 @@ class Article :
         isDailyTeaching = cfg.get("Default", "isDailyTeaching")
         imgBaseUrl = cfg.get("Default", "imBaseUrl")
         img = cfg.get("Default", "img")
+        nameIntro = cfg.get("Default", "agentIntroPhrase");
 
         if cfg.has_section(categoryName):
             options = cfg.options(categoryName)
@@ -116,6 +117,8 @@ class Article :
                     imgBaseUrl = val
                 elif option == "img":
                     img = val
+                elif option == "agentintrophrase":
+                    nameIntro = val
 
         imgurl = imgBaseUrl + img
 
@@ -128,7 +131,7 @@ class Article :
                 <td width="100%" style="color: white; font-family: Calibri;" class="articleBarText">
                     <b>""" + categoryName.upper() + """</b>"""
         if isDailyTeaching == 'False':
-            html += """ - submitted by """ + submitterName
+            html += " - " + nameIntro + " " + submitterName
         html += """
                 </td>
             </tr>
