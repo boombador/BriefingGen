@@ -1,4 +1,3 @@
-
 from bs4 import BeautifulSoup, NavigableString
 from ununicode import toascii
 from HTMLParser import HTMLParser
@@ -131,7 +130,8 @@ class Article :
                 <td width="100%" style="color: white; font-family: Calibri;" class="articleBarText">
                     <b>""" + categoryName.upper() + """</b>"""
         if isDailyTeaching == 'False':
-            html += " - " + nameIntro + " " + submitterName
+            if submitterName :
+                html += " - " + nameIntro + " " + submitterName
         html += """
                 </td>
             </tr>
@@ -171,7 +171,8 @@ class Article :
                                     <td></td>
                                     <td align="left">"""
         if isDailyTeaching == 'True':
-            html += submitterName
+            if submitterName :
+                html += submitterName
         else : 
             html += """<a href=\"""" + linkUrl + """">Read More</a>"""
         html += """
