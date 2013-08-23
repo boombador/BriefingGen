@@ -65,9 +65,10 @@ class CustomEntry :
             print >> stderr, "WARNING: No practices found for any date"
             exit(0)
 
+        
         if not displayRows :
+            return False;
             print >> stderr, "WARNING: Today's Daily Practice not found - checked %d rows for \"%s\"" % (row, currdate)
-            displayRows.append(backupRow)
 
         for row in displayRows :
             name =  texify(toascii(ceSheet.cell_value(row, self.nameCol)))

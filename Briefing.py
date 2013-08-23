@@ -132,7 +132,7 @@ class Briefing :
                 </table>
                 <table border="0" cellpadding="0" cellspacing="0" width="100%">"""
                 
-        if len(self.entries) > 0 :
+        if len(self.entries) > 0 and self.entries[0]:
             if len(self.entries) == 1 :
                 row = self.entries[0]
                 html += """
