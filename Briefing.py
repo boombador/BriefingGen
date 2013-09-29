@@ -28,20 +28,31 @@ class Briefing :
     def __init__(self, cfg) : 
         self.date = datetime.now().strftime('%Y%m%d')
         self.cfg = cfg
-        url = cfg.get("static", "briefingUrl")
-        briefConn = urlopen(url)
-        briefing = briefConn.read()
-
-        soup = BeautifulSoup(briefing)
         self.entries = []
-        entryFileName = cfg.get("static", "entriesFile")
-        entryList = CustomEntry(entryFileName)
-        todaysEntry = entryList.loadEntry()
-        self.entries.append(todaysEntry)
-
         self.articles = []
-        for item in  soup.findAll('item', limit=5) :
-            self.articles.append(Article.from_item(item))
+
+        contentType = cfg.get("static", "contentType")
+        if contentType == 'local':
+            contentSource = cfg.get("static", "contentSource")
+            print 'Info: looking for content in ' + contentSource
+            self.articles.append(Article('testing', 'ian', 'tech', 'we are working on improving the blog generator', "", ""))
+        else:
+            print 'Info: using rss source: ' + url
+            url = cfg.get("static", "briefingUrl")
+            briefConn = urlopen(url)
+            briefing = briefConn.read()
+            soup = BeautifulSoup(briefing)
+            for item in  soup.findAll('item', limit=5) :
+                self.articles.append(Article.from_item(item))
+
+        entryFileName = cfg.get("static", "entriesFile")
+        try:
+            with open(entryFileName):
+                entryList = CustomEntry(entryFileName)
+                todaysEntry = entryList.loadEntry()
+                self.entries.append(todaysEntry)
+        except IOError:
+            print 'Warning: Problem reading ' + entryFileName +', moving on...'
 
     def getFileName(self, withDate=False) :
         name = "BriefingEmail"
