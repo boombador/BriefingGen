@@ -30,14 +30,7 @@ xml: nothing
 title: Further updates
 contributor: Ian M
 category: Open Source
-content: We can now read content directly from text files, moving this project in the direction of true general-purpose usability.
-href: https://github.com/boombador/NewsBetter
-xml: nothing
----
-title: Further updates
-contributor: Ian M
-category: Open Source
-content: We can now read content directly from text files, moving this project in the direction of true general-purpose usability.
+content: Templating is making progress, soon I'll be able to quickly make extensive visible changes.
 href: https://github.com/boombador/NewsBetter
 xml: nothing
 ---

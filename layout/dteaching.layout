@@ -1,0 +1,47 @@
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tbody>
+        <tr height="30" bgcolor="{{{ barColor }}}" class="articleBar">
+            <td width="36">
+                <img src="{{{ imgurl }}}" width="36" height="30">
+            </td>
+            <td width="100%" style="color: white; font-family: Calibri;" class="articleBarText">
+                <b>{{{ categoryName }}}</b>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" bgcolor="{{{ backgroundColor }}}">
+                <div class="articleBoxWrapper">
+                    <div class="articleBox">
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                            <tbody><tr height="10" class="articleBoxTopSpacer">
+                                <td colspan="3"></td>
+                            </tr>
+                            <tr><!-- Title row, not always needed -->
+                                <td width="15"></td>
+                                <td align="left" style="font-size: 18px; font-weight: 700;" class="articleTitle">{{{ articleTitle }}}</td>
+                                <td width="15"></td>
+                            </tr>
+                            <tr height="5">
+                            </tr>
+                            <tr>
+                                <td width="15"></td>
+                                <td>{{{ articleText }}}</td>
+                                <td width="15"></td>
+                            </tr>
+                            <tr height="10" class="readMoreLink">
+                                <td colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td align="left">{{{ submitterName }}}</td>
+                                <td></td>
+                            </tr>
+                            <tr height="20" class="articleBoxBottomSpacer">
+                            </tr>
+                        </tbody></table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

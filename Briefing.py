@@ -5,6 +5,7 @@ from csv import *
 import re
 from cgi import escape
 import pprint
+import sys
 
 # yes
 from CustomEntry import *
@@ -12,6 +13,17 @@ from Article import *
 from bs4 import BeautifulSoup
 from urllib import urlopen
 from operator import attrgetter
+
+def loadPartial(partialType, partial, params=None) :
+    name = partialType+'/'+partial+'.'+partialType
+    with open(name, 'r') as f :
+        layout = f.read()
+        if params :
+            for key in params :
+                needle = '{{{ '+key+' }}}'
+                replace = params[key]
+                layout = layout.replace(needle, replace)
+        return layout
 
 def detexify(str) :
     simpleEscaped = re.compile(r'\\([#$%&~_^{}|])')
@@ -23,6 +35,7 @@ def detexify(str) :
     
 def hexColor(str) :
     return "#%02X%02X%02X" % tuple([int(num) for num in str.split()])
+
 
 class Briefing :
     def __init__(self, cfg, cc=0) : 
@@ -100,99 +113,56 @@ class Briefing :
         return name
 
     def cssText(self) :
-        style = """
-        <style>\n"""
+        style = ''
         with open('css/screen.css', 'r') as f :
-            screenStyle = f.read()
-            style += """
-                @media print {\n"""
-            style += screenStyle
-            style += """
-                }"""
+            content = f.read()
+            params = { 'media': 'print', 'content': content }
+            style += loadPartial('layout', 'css', params)
+
         with open('css/print.css', 'r') as f :
-            printStyle = f.read()
-            style += """
-                @media print {\n"""
-            style += printStyle
-            style += """
-                }"""
-        style += """
-        </style>
-        """
+            content = f.read()
+            params = { 'media': 'print', 'content': content }
+            style += loadPartial('layout', 'css', params)
+
+        style = '<style>\n' + style + '\n</style>'
         return style
-
-    def headerHTML(self, cfg) :
-        with open('layouts/header.layout', 'r') as f :
-            layout = f.read()
-            params = {
-                'dateString': datetime.now().strftime('%B %d, %Y'),
-                'CVerb': cfg.get("static", "CVerb"),
-                'compiler': cfg.get("static", "Compiler") 
-            }
-            for key in params :
-                needle = '{{{ '+key+' }}}'
-                repl = params[key]
-                layout = layout.replace(needle, repl)
-            return layout
-
 
     def printBriefingHTML(self) :
         articles = self.articles
         cfg = self.cfg
-
         style = self.cssText()
-
-        headerHTML = self.headerHTML(cfg)
+        params = {
+            'dateString': datetime.now().strftime('%B %d, %Y'),
+            'CVerb': cfg.get("static", "CVerb"),
+            'compiler': cfg.get("static", "Compiler") 
+        }
+        headerHTML = loadPartial('layout', 'header', params)
 
         html = """
         <table border="0" style="background-color:#FFFFFF; max-width: 960px; font-family: Calibri;" cellpadding="0" cellspacing="0">
-            <tr><td>
-            """ + headerHTML + """
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">"""
-        if len(self.entries) > 0 and self.entries[0]:
-            if len(self.entries) == 1 :
-                row = self.entries[0]
-                html += """
-                    <tr><!-- begin dp section -->
-                        <td width="100%">
-                            """ + row.getHTML(cfg) + """
-                        </td>
-                    </tr>"""
-            else :
-                row1 = self.entries[0]
-                row2 = self.entries[1]
-                html += """
-                    <tr><!-- more than 1 daily practice -->
-                        <td width="100%">
-                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                <tr valign="top">
-                                    <td width="30%">""" + row1.getHTML(cfg) + """</td>
-                                    <td width="2%"></td>
-                                    <td width="68%">""" + row2.getHTML(cfg) + """ </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>"""
-        for row in articles :
+            <tr>
+                <td>
+                    """+headerHTML+"""
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">"""
+
+        if len(self.entries) > 0 :
+            row = self.entries[0]
             html += """
-                    <tr>
-                        <td width="100%">
+                <tr><!-- begin dp section -->
+                    <td width="100%">
                         """ + row.getHTML(cfg) + """
-                        </td>
-                    </tr>"""
+                    </td>
+                </tr>"""
+
+        for article in articles :
+            html += article.toHTML(cfg, 'rowWrapper')
+
+        footer = loadPartial('layout', 'footer')
         html += """
-                </table>
-            <!-- Footer table-->
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                    <tr height="10">
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            Want to get involved? Email comments, suggestions, and articles to Team Daily Briefing!
-                        </td>
-                    </tr>
-                </table>
-            </td></tr>
+                    </table>
+                    """ + footer + """
+                </td>
+            </tr>
         </table>"""
         return style + html
 

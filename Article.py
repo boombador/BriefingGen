@@ -3,7 +3,17 @@ from ununicode import toascii
 from HTMLParser import HTMLParser
 import re
 
-MINLENGTH = 800
+def loadPartial(partialType, partial, params=None) :
+    name = partialType+'/'+partial+'.'+partialType
+    with open(name, 'r') as f :
+        layout = f.read()
+        if params :
+            for key in params :
+                needle = '{{{ '+key+' }}}'
+                replace = params[key]
+                layout = layout.replace(needle, replace)
+        return layout
+
 
 def strip_tags(html):
     soup = BeautifulSoup(html)
@@ -39,7 +49,6 @@ class Article :
 
     @classmethod
     def from_item(cls, item) :
-        global MINLENGTH
         title = toascii(unicode(item.title.string))
         contributor = toascii(unicode(item.find('dc:creator').string))
         href = toascii(unicode(item.link.string))
@@ -49,7 +58,6 @@ class Article :
         paragraphs = BeautifulSoup(unicode(paragraphs.string)).findAll('p')
         i = 0
         h = HTMLParser()
-        # while len(content)<MINLENGTH and i<len(paragraphs) :
         while i<len(paragraphs) :
             toAdd = h.unescape(toascii(unicode(strip_tags(unicode(paragraphs[i])))).strip()) 
             if len(toAdd) > 0 :
@@ -115,7 +123,54 @@ class Article :
     def url(self) :
         return self.href
 
-    def getHTML(self, cfg) :
+    def toHTML(self, cfg, containerApply=None) :
+        categoryName = self.category
+        submitterName = self.contributor
+        articleText = self.content
+        articleTitle = self.title
+        linkUrl = self.href
+        imgBaseUrl = 'https://imga.nxjimg.com/secured/image/briefing/'
+        img = 'marketing.jpg'
+        barColor = cfg.get("Default", "barColor")
+        backgroundColor = cfg.get("Default", "backgroundColor")
+        isDailyTeaching = cfg.get("Default", "isDailyTeaching")
+        imgBaseUrl = cfg.get("Default", "imBaseUrl")
+        img = cfg.get("Default", "img")
+        nameIntro = cfg.get("Default", "agentIntroPhrase");
+        if cfg.has_section(categoryName):
+            options = cfg.options(categoryName)
+            for option in options :
+                val = cfg.get(categoryName, option)
+                if option == "barcolor":
+                    barColor = val
+                elif option == "backgroundcolor":
+                    backgroundColor = val
+                elif option == "isdailyteaching":
+                    isDailyTeaching = val
+                elif option == "imgbaseurl":
+                    imgBaseUrl = val
+                elif option == "img":
+                    img = val
+                elif option == "agentintrophrase":
+                    nameIntro = val
+        imgurl = imgBaseUrl + img
+        params = {
+            'categoryName': categoryName.upper(),
+            'nameIntro': nameIntro,
+            'submitterName': submitterName,
+            'articleTitle': articleTitle,
+            'articleText': articleText,
+            'barColor': barColor,
+            'backgroundColor': backgroundColor,
+            'linkUrl': linkUrl,
+            'imgurl': imgurl
+        }
+        html = loadPartial('layout', 'article', params)
+        if containerApply :
+            html = loadPartial('layout', containerApply, { 'content': html })
+        return html
+
+    def getHTML(self, cfg, addContainer=True) :
         categoryName = self.category
         submitterName = self.contributor
         articleText = self.content
@@ -150,6 +205,8 @@ class Article :
                     nameIntro = val
 
         imgurl = imgBaseUrl + img
+
+        isDailyTeaching = 'True'
 
         html = """
         <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -218,4 +275,12 @@ class Article :
             </tr>
         </table>
         """
+
+        if addContainer :
+            html = """
+            <tr>
+                <td width="100%">
+                """ + html + """
+                </td>
+            </tr>"""
         return html
