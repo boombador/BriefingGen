@@ -20,10 +20,10 @@ content: We can now read content directly from text files, moving this project i
 href: https://github.com/boombador/NewsBetter
 xml: nothing
 ---
-title: Further updates
+title: Health Test
 contributor: Ian M
-category: Open Source
-content: We can now read content directly from text files, moving this project in the direction of true general-purpose usability.
+category: Wellness
+content: Adding this update as a test for the new prominence feature
 href: https://github.com/boombador/NewsBetter
 xml: nothing
 ---

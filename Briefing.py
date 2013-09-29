@@ -12,6 +12,7 @@ from CustomEntry import *
 from Article import *
 from bs4 import BeautifulSoup
 from urllib import urlopen
+from operator import attrgetter
 
 def detexify(str) :
     simpleEscaped = re.compile(r'\\([#$%&~_^{}|])')
@@ -35,7 +36,7 @@ class Briefing :
         if contentType == 'local':
             contentSource = cfg.get("static", "contentSource")
             print 'Info: looking for content in ' + contentSource
-            self.readContentFile(contentSource)
+            self.readContentFile(contentSource, cfg)
         else:
             print 'Info: using rss source: ' + url
             url = cfg.get("static", "briefingUrl")
@@ -54,7 +55,12 @@ class Briefing :
         except IOError:
             print 'Warning: Problem reading ' + entryFileName +', moving on...'
 
-    def readContentFile(self, fileName) :
+        # sort articles by prominence
+        self.articles.sort(key=attrgetter('prominence'), reverse=True)
+        for item in self.articles:
+            print item
+
+    def readContentFile(self, fileName, cfg) :
         with open(fileName, 'r') as f :
             curArticle = None
             for line in f :
@@ -70,6 +76,11 @@ class Briefing :
                     key = line[0:index]
                     val = line[index+2:]
                     curArticle.setField(key, val)
+                    if key == 'category' :
+                        prom = cfg.get(val, 'prominence')
+                        if not prom :
+                            prom = cfg.get('Default', 'prominence')
+                        curArticle.prominence = prom
 
     def getFileName(self, withDate=False) :
         name = "BriefingEmail"

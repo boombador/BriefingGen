@@ -35,6 +35,7 @@ class Article :
         self.category = category
         self.content = content
         self.href = href
+        self.prominence = 5
 
     @classmethod
     def from_item(cls, item) :
@@ -72,11 +73,12 @@ class Article :
             self.xml = val
 
     def __str__(self) :
-        return self.href + ": (" \
+        return str(self.prominence) + " " \
+            +  self.href + ": (" \
             +  self.category + ") " \
             +  self.contributor + " posted \"" \
-            +  self.title + "\"\n\n" \
-            + self.content 
+            +  self.title + "\"\n" \
+            + self.content + "\n"
     def csv(self) :
         return texify(self.href) + "|" \
             + texify(self.title) + "|" \
