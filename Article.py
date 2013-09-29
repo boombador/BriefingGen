@@ -63,7 +63,6 @@ class Article :
     # more accurately to simplify the spacing requirements in the email layout
     def clamp(self, cc=0) :
         content = self.content
-
         if cc > 0 :
             newContent = ''
             for word in content.split() :

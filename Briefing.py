@@ -99,88 +99,56 @@ class Briefing :
         name += ".html"
         return name
 
+    def cssText(self) :
+        style = """
+        <style>\n"""
+        with open('css/screen.css', 'r') as f :
+            screenStyle = f.read()
+            style += """
+                @media print {\n"""
+            style += screenStyle
+            style += """
+                }"""
+        with open('css/print.css', 'r') as f :
+            printStyle = f.read()
+            style += """
+                @media print {\n"""
+            style += printStyle
+            style += """
+                }"""
+        style += """
+        </style>
+        """
+        return style
+
+    def headerHTML(self, cfg) :
+        with open('layouts/header.layout', 'r') as f :
+            layout = f.read()
+            params = {
+                'dateString': datetime.now().strftime('%B %d, %Y'),
+                'CVerb': cfg.get("static", "CVerb"),
+                'compiler': cfg.get("static", "Compiler") 
+            }
+            for key in params :
+                needle = '{{{ '+key+' }}}'
+                repl = params[key]
+                layout = layout.replace(needle, repl)
+            return layout
+
+
     def printBriefingHTML(self) :
         articles = self.articles
         cfg = self.cfg
 
-        html = """
-        <style>
-        @media screen {
-            .overflowEllipsis {
-                display: none;
-            }
-        }
-        @media print {
-            table {
-                font-size: 11px;
-            }
-            .articleBar {
-                height: 20px;
-            }
-            .articleBar img {
-                height: 19px;
-                width: 24px;
-            }
-            .articleTitle {
-                font-size: 12px !important;
-            }
-            .readMoreLink {
-                display: none;
-            }
-            .articleBoxWrapper {
-                padding-bottom: 10px;
-            }
-            .articleBoxWrapper.noTitle {
-                padding-bottom: 18px;
-            }
-            .articleBox {
-                max-height: 130px;
-                overflow: hidden;
-                position: relative;
-            }
-            .noTitle .articleBox {
-                max-height:124px;
-            }
-            .overflowEllipsis {
-                display: block;
-                position: absolute;
-                right: 15;
-                bottom: 2;
-                background-color: #f4f5f4;
-                padding-left: 10px;
-            }
-            .noTitle .overflowEllipsis {
-                bottom: 0;
-            }
-            .articleBoxTopSpacer {
-                height: 5px;
-            }
-            .articleBoxBottomSpacer {
-                display: none;
-            }
-        }
-        </style>
+        style = self.cssText()
 
+        headerHTML = self.headerHTML(cfg)
+
+        html = """
         <table border="0" style="background-color:#FFFFFF; max-width: 960px; font-family: Calibri;" cellpadding="0" cellspacing="0">
             <tr><td>
-                <!-- Header section table -->
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                    <tr>
-                        <td width="480" style="font-family: Calibri;">
-                            """ + datetime.now().strftime('%B %d, %Y') + """<br/>
-                            Daily Briefing: """ + cfg.get("static", "CVerb")  + " by " + cfg.get("static", "Compiler") +"""<br/>
-                            <a href="https://briefing.nextjump.com/">Daily Briefing Site</a><br/>
-                            <a href="https://wiki.nextjump.com/wiki/index.php/Daily_Briefing">Daily Briefing Wiki</a>
-                        </td>
-                        <td width="480" valign="middle" align="right">
-                            <img src="https://imga.nxjimg.com/secured/image/briefing/dblogo.jpg" width="300" height="65">
-                        </td>
-                    </tr>
-                    <tr height="10">
-                    </tr>
-                </table>
+            """ + headerHTML + """
                 <table border="0" cellpadding="0" cellspacing="0" width="100%">"""
-                
         if len(self.entries) > 0 and self.entries[0]:
             if len(self.entries) == 1 :
                 row = self.entries[0]
@@ -205,8 +173,6 @@ class Briefing :
                             </table>
                         </td>
                     </tr>"""
-
-
         for row in articles :
             html += """
                     <tr>
@@ -228,5 +194,5 @@ class Briefing :
                 </table>
             </td></tr>
         </table>"""
-        return html
+        return style + html
 
