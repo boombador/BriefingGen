@@ -35,7 +35,8 @@ class Briefing :
         if contentType == 'local':
             contentSource = cfg.get("static", "contentSource")
             print 'Info: looking for content in ' + contentSource
-            self.articles.append(Article('testing', 'ian', 'tech', 'we are working on improving the blog generator', "", ""))
+            self.readContentFile(contentSource)
+            # self.articles.append(Article('testing', 'ian', 'tech', 'we are working on improving the blog generator', "", ""))
         else:
             print 'Info: using rss source: ' + url
             url = cfg.get("static", "briefingUrl")
@@ -53,6 +54,16 @@ class Briefing :
                 self.entries.append(todaysEntry)
         except IOError:
             print 'Warning: Problem reading ' + entryFileName +', moving on...'
+
+    def readContentFile(self, fileName) :
+        self.cfg.read(fileName)
+        title = self.cfg.get("post0", "title")
+        contributor = self.cfg.get("post0", "contributor")
+        category = self.cfg.get("post0", "category")
+        content = self.cfg.get("post0", "content")
+        href = self.cfg.get("post0", "href")
+        xml = self.cfg.get("post0", "xml")
+        self.articles.append(Article(title, contributor, category, content, href, xml))
 
     def getFileName(self, withDate=False) :
         name = "BriefingEmail"

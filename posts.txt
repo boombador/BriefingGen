@@ -1,0 +1,7 @@
+[post0]
+title: Updates to the blog generator
+contributor: Ian M
+category: Open Source
+content: We have made great strides in improving the functionality and extensibility of the generator. Please enjoy.
+href: https://github.com/boombador/NewsBetter
+xml: nothing
