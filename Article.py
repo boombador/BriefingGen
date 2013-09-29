@@ -29,7 +29,7 @@ def texify(str) :
     return str
 
 class Article :
-    def __init__(self, title, contributor, category, content, href, xml) :
+    def __init__(self, title='Title', contributor='user', category='General', content='Empty post', href=None, xml=None) :
         self.title = title
         self.contributor = contributor
         self.category = category
@@ -56,6 +56,20 @@ class Article :
         content = re.compile(r'\r?\n').sub(' ', content)
         xml = item
         return cls(title, contributor, category, content, href, xml)
+
+    def setField(self, key, val) :
+        if key == 'title' :
+            self.title = val
+        elif key == 'contributor' :
+            self.contributor = val
+        elif key == 'category' :
+            self.category = val
+        elif key == 'content' :
+            self.content = val
+        elif key == 'href' :
+            self.href = val
+        elif key == 'xml' :
+            self.xml = val
 
     def __str__(self) :
         return self.href + ": (" \

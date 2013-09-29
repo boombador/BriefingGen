@@ -1,7 +1,43 @@
-[post0]
+---
 title: Updates to the blog generator
 contributor: Ian M
 category: Open Source
 content: We have made great strides in improving the functionality and extensibility of the generator. Please enjoy.
 href: https://github.com/boombador/NewsBetter
 xml: nothing
+---
+title: Further updates
+contributor: Ian M
+category: Open Source
+content: We can now read content directly from text files, moving this project in the direction of true general-purpose usability.
+href: https://github.com/boombador/NewsBetter
+xml: nothing
+---
+title: Further updates
+contributor: Ian M
+category: Open Source
+content: We can now read content directly from text files, moving this project in the direction of true general-purpose usability.
+href: https://github.com/boombador/NewsBetter
+xml: nothing
+---
+title: Further updates
+contributor: Ian M
+category: Open Source
+content: We can now read content directly from text files, moving this project in the direction of true general-purpose usability.
+href: https://github.com/boombador/NewsBetter
+xml: nothing
+---
+title: Further updates
+contributor: Ian M
+category: Open Source
+content: We can now read content directly from text files, moving this project in the direction of true general-purpose usability.
+href: https://github.com/boombador/NewsBetter
+xml: nothing
+---
+title: Further updates
+contributor: Ian M
+category: Open Source
+content: We can now read content directly from text files, moving this project in the direction of true general-purpose usability.
+href: https://github.com/boombador/NewsBetter
+xml: nothing
+---

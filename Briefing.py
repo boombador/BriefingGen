@@ -36,7 +36,6 @@ class Briefing :
             contentSource = cfg.get("static", "contentSource")
             print 'Info: looking for content in ' + contentSource
             self.readContentFile(contentSource)
-            # self.articles.append(Article('testing', 'ian', 'tech', 'we are working on improving the blog generator', "", ""))
         else:
             print 'Info: using rss source: ' + url
             url = cfg.get("static", "briefingUrl")
@@ -56,14 +55,21 @@ class Briefing :
             print 'Warning: Problem reading ' + entryFileName +', moving on...'
 
     def readContentFile(self, fileName) :
-        self.cfg.read(fileName)
-        title = self.cfg.get("post0", "title")
-        contributor = self.cfg.get("post0", "contributor")
-        category = self.cfg.get("post0", "category")
-        content = self.cfg.get("post0", "content")
-        href = self.cfg.get("post0", "href")
-        xml = self.cfg.get("post0", "xml")
-        self.articles.append(Article(title, contributor, category, content, href, xml))
+        with open(fileName, 'r') as f :
+            curArticle = None
+            for line in f :
+                line = line.strip()
+                if line == '---' :
+                    if curArticle :
+                        self.articles.append(curArticle)
+                    if len(self.articles) >= 5 :
+                        return
+                    curArticle = Article()
+                else :
+                    index = line.find(':')
+                    key = line[0:index]
+                    val = line[index+2:]
+                    curArticle.setField(key, val)
 
     def getFileName(self, withDate=False) :
         name = "BriefingEmail"
