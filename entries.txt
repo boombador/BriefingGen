@@ -1,0 +1,7 @@
+---
+contributor: Ian M
+category: Next Jump Teachings
+content: Contributing to open source is as easy as contributing documentation to a project you work with daily. Many tools in the web developer's toolkit can be improved with a minimal investment of time.
+href: https://github.com/boombador/NewsBetter
+xml: nothing
+---

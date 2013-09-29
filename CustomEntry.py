@@ -42,7 +42,6 @@ class CustomEntry :
             elif val == "Link_URL" :
                 self.urlCol = i
             i+=1
-
         self.sheet = ceSheet
 
     def loadEntry(self) :
@@ -65,7 +64,6 @@ class CustomEntry :
             print >> stderr, "WARNING: No practices found for any date"
             exit(0)
 
-        
         if not displayRows :
             return False;
             print >> stderr, "WARNING: Today's Daily Practice not found - checked %d rows for \"%s\"" % (row, currdate)
@@ -77,12 +75,6 @@ class CustomEntry :
             if not category :
                 category = 'Next Jump Teachings'
             url = texify(toascii(ceSheet.cell_value(row, self.urlCol)))
-        self.article = Article("", name, category, practice, url, None)
+        self.article = Article("", name, category, practice, url, None, 'article')
         return self.article
-
-#
-#if (nameCol + quoteCol) * (nameCol + pubCol) * (quoteCol + pubCol) == 0 :
- #   print >> stderr, "ERROR: Missing Column in %s, Looking for \"Name\", \"Practice\" and \"Published\"" % XLS_FILE_NAME
-  #  exit(1)
-
 

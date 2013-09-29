@@ -15,6 +15,7 @@ from urllib import urlopen
 from operator import attrgetter
 
 def loadPartial(partialType, partial, params=None) :
+    print "Debuger: " + partial
     name = partialType+'/'+partial+'.'+partialType
     with open(name, 'r') as f :
         layout = f.read()
@@ -41,20 +42,36 @@ class Briefing :
     def __init__(self, cfg, cc=0) : 
         self.date = datetime.now().strftime('%Y%m%d')
         self.cfg = cfg
-        self.entries = []
         self.articles = []
         if not cc: 
             self.maxCharacters = int(cfg.get('static', 'maxCharacters'))
         else :
             self.maxCharacters = cc
 
+        # read special entries, originally the Daily Practices
+        entryFileName = cfg.get("static", "entriesFile")
+        try:
+            with open(entryFileName) as f :
+                entryList = CustomEntry(entryFileName)
+                todaysEntry = entryList.loadEntry()
+                self.articles.append(todaysEntry)
+                self.foundSpecialEntry = 1
+        except IOError:
+            print 'Warning: Problem reading ' + entryFileName +', moving on...'
+            self.foundSpecialEntry = 0
+            try:
+                self.readContentFile('entries.txt', cfg, 1)
+                self.foundSpecialEntry = 1
+            except:
+                self.foundSpecialEntry = 0
+
         contentType = cfg.get("static", "contentType")
         if contentType == 'local':
             contentSource = cfg.get("static", "contentSource")
-            print 'Info: looking for content in ' + contentSource
+            # print 'Info: looking for content in ' + contentSource
             self.readContentFile(contentSource, cfg)
         else:
-            print 'Info: using rss source: ' + url
+            # print 'Info: using rss source: ' + url
             url = cfg.get("static", "briefingUrl")
             briefConn = urlopen(url)
             briefing = briefConn.read()
@@ -64,32 +81,22 @@ class Briefing :
                 newArticle.clamp(self.maxCharacters)
                 self.articles.append(newArticle)
 
-        entryFileName = cfg.get("static", "entriesFile")
-        try:
-            with open(entryFileName):
-                entryList = CustomEntry(entryFileName)
-                todaysEntry = entryList.loadEntry()
-                self.entries.append(todaysEntry)
-        except IOError:
-            print 'Warning: Problem reading ' + entryFileName +', moving on...'
 
         # sort articles by prominence
         self.articles.sort(key=attrgetter('prominence'), reverse=True)
 
-        # debug print statement
-        # for item in self.articles:
-            # print item
-
-    def readContentFile(self, fileName, cfg) :
+    def readContentFile(self, fileName, cfg, limit=5) :
         with open(fileName, 'r') as f :
             curArticle = None
             for line in f :
                 line = line.strip()
+                numArticles = 0
                 if line == '---' :
                     if curArticle :
                         curArticle.clamp(self.maxCharacters)
                         self.articles.append(curArticle)
-                    if len(self.articles) >= 5 :
+                        numArticles += 1
+                    if numArticles >= limit :
                         return
                     curArticle = Article()
                 else :
@@ -144,15 +151,6 @@ class Briefing :
                 <td>
                     """+headerHTML+"""
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">"""
-
-        if len(self.entries) > 0 :
-            row = self.entries[0]
-            html += """
-                <tr><!-- begin dp section -->
-                    <td width="100%">
-                        """ + row.getHTML(cfg) + """
-                    </td>
-                </tr>"""
 
         for article in articles :
             html += article.toHTML(cfg, 'rowWrapper')

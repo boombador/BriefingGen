@@ -4,6 +4,7 @@ from HTMLParser import HTMLParser
 import re
 
 def loadPartial(partialType, partial, params=None) :
+    print "Debug: " + partial
     name = partialType+'/'+partial+'.'+partialType
     with open(name, 'r') as f :
         layout = f.read()
@@ -17,17 +18,13 @@ def loadPartial(partialType, partial, params=None) :
 
 def strip_tags(html):
     soup = BeautifulSoup(html)
-
     for tag in soup.findAll(True):
         s = ""
-
         for c in tag.contents:
             if not isinstance(c, NavigableString):
                 c = strip_tags(unicode(c))
             s += unicode(c)
-
         tag.replaceWith(s)
-
     return soup
 
 def texify(str) :
@@ -39,13 +36,14 @@ def texify(str) :
     return str
 
 class Article :
-    def __init__(self, title='Title', contributor='user', category='General', content='Empty post', href=None, xml=None) :
+    def __init__(self, title='', contributor='user', category='General', content='Empty post', href=None, xml=None, layout='article') :
         self.title = title
         self.contributor = contributor
         self.category = category
         self.content = content
         self.href = href
         self.prominence = 5
+        self.layout = layout
 
     @classmethod
     def from_item(cls, item) :
@@ -99,7 +97,8 @@ class Article :
             +  self.href + ": (" \
             +  self.category + ") " \
             +  self.contributor + " posted \"" \
-            +  self.title + "\"\n" \
+            +  self.title \
+            + ' ['+self.layout+']\n' \
             + self.content + "\n"
     def csv(self) :
         return texify(self.href) + "|" \
@@ -110,16 +109,12 @@ class Article :
 
     def category(self) :
         return self.category
-
     def contributor(self) :
         return self.contributor
-
     def title(self) :
         return self.title
-
     def text(self) :
         return self.content
-
     def url(self) :
         return self.href
 
@@ -133,7 +128,6 @@ class Article :
         img = 'marketing.jpg'
         barColor = cfg.get("Default", "barColor")
         backgroundColor = cfg.get("Default", "backgroundColor")
-        isDailyTeaching = cfg.get("Default", "isDailyTeaching")
         imgBaseUrl = cfg.get("Default", "imBaseUrl")
         img = cfg.get("Default", "img")
         nameIntro = cfg.get("Default", "agentIntroPhrase");
@@ -145,14 +139,16 @@ class Article :
                     barColor = val
                 elif option == "backgroundcolor":
                     backgroundColor = val
-                elif option == "isdailyteaching":
-                    isDailyTeaching = val
                 elif option == "imgbaseurl":
                     imgBaseUrl = val
                 elif option == "img":
                     img = val
                 elif option == "agentintrophrase":
                     nameIntro = val
+        if cfg.has_option(categoryName, 'layout') :
+            self.layout = cfg.get(categoryName, 'layout')
+        else :
+            self.layout = cfg.get("Default", 'layout')
         imgurl = imgBaseUrl + img
         params = {
             'categoryName': categoryName.upper(),
@@ -165,122 +161,9 @@ class Article :
             'linkUrl': linkUrl,
             'imgurl': imgurl
         }
-        html = loadPartial('layout', 'article', params)
+        print self
+        html = loadPartial('layout', self.layout, params)
         if containerApply :
             html = loadPartial('layout', containerApply, { 'content': html })
         return html
 
-    def getHTML(self, cfg, addContainer=True) :
-        categoryName = self.category
-        submitterName = self.contributor
-        articleText = self.content
-        articleTitle = self.title
-        linkUrl = self.href
-
-        imgBaseUrl = 'https://imga.nxjimg.com/secured/image/briefing/'
-        img = 'marketing.jpg'
-
-        barColor = cfg.get("Default", "barColor")
-        backgroundColor = cfg.get("Default", "backgroundColor")
-        isDailyTeaching = cfg.get("Default", "isDailyTeaching")
-        imgBaseUrl = cfg.get("Default", "imBaseUrl")
-        img = cfg.get("Default", "img")
-        nameIntro = cfg.get("Default", "agentIntroPhrase");
-
-        if cfg.has_section(categoryName):
-            options = cfg.options(categoryName)
-            for option in options :
-                val = cfg.get(categoryName, option)
-                if option == "barcolor":
-                    barColor = val
-                elif option == "backgroundcolor":
-                    backgroundColor = val
-                elif option == "isdailyteaching":
-                    isDailyTeaching = val
-                elif option == "imgbaseurl":
-                    imgBaseUrl = val
-                elif option == "img":
-                    img = val
-                elif option == "agentintrophrase":
-                    nameIntro = val
-
-        imgurl = imgBaseUrl + img
-
-        isDailyTeaching = 'True'
-
-        html = """
-        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-            <tr height="30" bgcolor=\"""" + barColor + """" class="articleBar">
-                <td width="36">
-                    <img src=\"""" + imgurl + """" width="36" height="30">
-                </td>
-                <td width="100%" style="color: white; font-family: Calibri;" class="articleBarText">
-                    <b>""" + categoryName.upper() + """</b>"""
-        if isDailyTeaching == 'False':
-            if submitterName :
-                html += " - " + nameIntro + " " + submitterName
-        html += """
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" bgcolor=\"""" + backgroundColor + """">
-                    <div class="articleBoxWrapper">
-                        <div class="articleBox">"""
-
-        html += """
-                            <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                                <tr height="10" class="articleBoxTopSpacer">
-                                    <td colspan="3"></td>
-                                </tr>"""
-        if articleTitle :
-            html += """
-                                <tr><!-- Title row, not always needed -->
-                                    <td width="15"></td>
-                                    <td align="left" style="font-size: 18px; font-weight: 700;" class="articleTitle">""" + articleTitle + """</td>
-                                    <td width="15"></td>
-                                </tr>
-                                <tr height="5">
-                                </tr>"""
-        html += """
-                                <tr>
-                                    <td width="15"></td>
-                                    <td>""" + articleText + """</td>
-                                    <td width="15"></td>
-                                </tr>
-                                <tr height="10" class="readMoreLink">
-                                    <td colspan="3"></td>
-                                </tr>
-                                <tr"""
-        if isDailyTeaching == 'False':
-            html += """ class="readMoreLink\""""
-
-        html += """>
-                                    <td></td>
-                                    <td align="left">"""
-        if isDailyTeaching == 'True':
-            if submitterName :
-                html += submitterName
-        else : 
-            html += """<a href=\"""" + linkUrl + """">Read More</a>"""
-        html += """
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr height="20" class="articleBoxBottomSpacer">
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-        """
-
-        if addContainer :
-            html = """
-            <tr>
-                <td width="100%">
-                """ + html + """
-                </td>
-            </tr>"""
-        return html
