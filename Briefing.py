@@ -1,5 +1,4 @@
 
-
 # needed?
 from datetime import datetime, timedelta
 from csv import *
@@ -26,11 +25,15 @@ def hexColor(str) :
     return "#%02X%02X%02X" % tuple([int(num) for num in str.split()])
 
 class Briefing :
-    def __init__(self, cfg) : 
+    def __init__(self, cfg, cc=0) : 
         self.date = datetime.now().strftime('%Y%m%d')
         self.cfg = cfg
         self.entries = []
         self.articles = []
+        if not cc: 
+            self.maxCharacters = int(cfg.get('static', 'maxCharacters'))
+        else :
+            self.maxCharacters = cc
 
         contentType = cfg.get("static", "contentType")
         if contentType == 'local':
@@ -44,7 +47,9 @@ class Briefing :
             briefing = briefConn.read()
             soup = BeautifulSoup(briefing)
             for item in  soup.findAll('item', limit=5) :
-                self.articles.append(Article.from_item(item))
+                newArticle = Article.from_item(item)
+                newArticle.clamp(self.maxCharacters)
+                self.articles.append(newArticle)
 
         entryFileName = cfg.get("static", "entriesFile")
         try:
@@ -57,8 +62,10 @@ class Briefing :
 
         # sort articles by prominence
         self.articles.sort(key=attrgetter('prominence'), reverse=True)
-        for item in self.articles:
-            print item
+
+        # debug print statement
+        # for item in self.articles:
+            # print item
 
     def readContentFile(self, fileName, cfg) :
         with open(fileName, 'r') as f :
@@ -67,6 +74,7 @@ class Briefing :
                 line = line.strip()
                 if line == '---' :
                     if curArticle :
+                        curArticle.clamp(self.maxCharacters)
                         self.articles.append(curArticle)
                     if len(self.articles) >= 5 :
                         return
@@ -77,8 +85,10 @@ class Briefing :
                     val = line[index+2:]
                     curArticle.setField(key, val)
                     if key == 'category' :
-                        prom = cfg.get(val, 'prominence')
-                        if not prom :
+                        hasProm = cfg.has_option(val, 'prominence')
+                        if hasProm :
+                            prom = cfg.get(val, 'prominence')
+                        else :
                             prom = cfg.get('Default', 'prominence')
                         curArticle.prominence = prom
 

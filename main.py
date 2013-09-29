@@ -3,11 +3,15 @@ from Briefing import *
 import ConfigParser
 import os
 
+if len(sys.argv) > 1 :
+    cc = int(sys.argv[1])
+else :
+    cc = 0
 
 cfg = ConfigParser.ConfigParser()
 cfg.read("static.conf")
 cfg.read("categories.conf")
-brief = Briefing(cfg)
+brief = Briefing(cfg, cc)
 
 html = brief.printBriefingHTML()
 

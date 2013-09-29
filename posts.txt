@@ -15,8 +15,8 @@ xml: nothing
 ---
 title: Further updates
 contributor: Ian M
-category: Open Source
-content: We can now read content directly from text files, moving this project in the direction of true general-purpose usability.
+category: eCommerce News
+content: Instacart, the San Francisco-based startup that arrived in Chicago earlier this month with promises of fast, crowdsourced Trader Joe's delivery, has stopped delivering the chain's groceries. Instarcart has, however, begun making Dominick's deliveries.  "Instacart has temporarily stopped making deliveries from Trader Joe's while we work out a more formal relationship with the company," an Instacart spokeswoman wrote in an e-mail this morning. "In Chicago, we've now got Dominick's (with more to come) and in San Francisco we've got Safeway, Whole Foods and Costco." The startup taps into a store's inventory so a customer can shop for a retailer's groceries via the Instacart app, but it does not have a formalized relationship with the grocery stores. Instacart uses its own prices, which "vary from the store's price" and "can be lower, the same, or higher than the store price," according to Instacart's website. The company then sends personal shoppers to gather the items and deliver them to a customer's door within a one- or two-hour delivery window.  The spokeswoman did not respond to further inquiries about why the Trader Joe's service was temporarily aborted or when it might be reinstated. A spokeswoman for Trader Joe's did not respond to requests for comment.  Instacart recently raised $8.5 million in early-stage funding and plans to roll out to 10 cities by the end of 2014.
 href: https://github.com/boombador/NewsBetter
 xml: nothing
 ---

@@ -49,7 +49,8 @@ class Article :
         paragraphs = BeautifulSoup(unicode(paragraphs.string)).findAll('p')
         i = 0
         h = HTMLParser()
-        while len(content)<MINLENGTH and i<len(paragraphs) :
+        # while len(content)<MINLENGTH and i<len(paragraphs) :
+        while i<len(paragraphs) :
             toAdd = h.unescape(toascii(unicode(strip_tags(unicode(paragraphs[i])))).strip()) 
             if len(toAdd) > 0 :
                 content = content + ' ' + toAdd
@@ -57,6 +58,20 @@ class Article :
         content = re.compile(r'\r?\n').sub(' ', content)
         xml = item
         return cls(title, contributor, category, content, href, xml)
+
+    # this is actually a pretty difficult function, ideally would cut off at the same length
+    # more accurately to simplify the spacing requirements in the email layout
+    def clamp(self, cc=0) :
+        content = self.content
+
+        if cc > 0 :
+            newContent = ''
+            for word in content.split() :
+                newContent += ' ' + word
+                if len(newContent) >= cc :
+                    newContent = newContent.strip() + '...'
+                    break
+            self.content = newContent.strip()
 
     def setField(self, key, val) :
         if key == 'title' :
