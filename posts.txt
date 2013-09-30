@@ -34,10 +34,3 @@ content: Templating is making progress, soon I'll be able to quickly make extens
 href: https://github.com/boombador/NewsBetter
 xml: nothing
 ---
-title: Further updates
-contributor: Ian M
-category: Open Source
-content: Templating is making progress, soon I'll be able to quickly make extensive visible changes.
-href: https://github.com/boombador/NewsBetter
-xml: nothing
----

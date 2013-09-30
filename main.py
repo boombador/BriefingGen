@@ -17,7 +17,6 @@ html = brief.printBriefingHTML()
 
 briefingFile = brief.getFileName()
 f = open(briefingFile, "w")
-# print "Info: Writing briefing to file: " + briefingFile
 f.write(html)
 f.close()
 
@@ -26,13 +25,9 @@ archive = cfg.get("static", "archiveDir")
 if not os.path.exists(archive):
     os.makedirs(archive)
 os.chdir(archive)
-# print "Info: Moving to archive directory: " + archive
 
 briefingFile = brief.getFileName(True)
 f = open(briefingFile, "w")
-# print "Info: Writing briefing to file: " + briefingFile
 f.write(html)
 f.close()
-
-# print "Info: Newsletter generated successfully"
 
