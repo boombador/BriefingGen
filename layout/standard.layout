@@ -1,0 +1,12 @@
+{{{ style }}}
+<table border="0" style="background-color:#FFFFFF; max-width: 960px; font-family: Calibri;" cellpadding="0" cellspacing="0">
+    <tr>
+        <td>
+            {{{ header }}}
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                {{{ articles }}}
+            </table>
+            {{{ footer }}}
+        </td>
+    </tr>
+</table>

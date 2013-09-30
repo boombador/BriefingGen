@@ -4,7 +4,6 @@ from HTMLParser import HTMLParser
 import re
 
 def loadPartial(partialType, partial, params=None) :
-    print "Debug: " + partial
     name = partialType+'/'+partial+'.'+partialType
     with open(name, 'r') as f :
         layout = f.read()
@@ -161,7 +160,6 @@ class Article :
             'linkUrl': linkUrl,
             'imgurl': imgurl
         }
-        print self
         html = loadPartial('layout', self.layout, params)
         if containerApply :
             html = loadPartial('layout', containerApply, { 'content': html })

@@ -18,7 +18,7 @@
                             </tr>
                             <tr><!-- Title row, not always needed -->
                                 <td width="15"></td>
-                                <td align="left" style="font-size: 18px; font-weight: 700;" class="articleTitle">DP: {{{ articleTitle }}}</td>
+                                <td align="left" style="font-size: 18px; font-weight: 700;" class="articleTitle">{{{ articleTitle }}}</td>
                                 <td width="15"></td>
                             </tr>
                             <tr height="5">

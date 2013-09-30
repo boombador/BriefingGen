@@ -15,7 +15,6 @@ from urllib import urlopen
 from operator import attrgetter
 
 def loadPartial(partialType, partial, params=None) :
-    print "Debuger: " + partial
     name = partialType+'/'+partial+'.'+partialType
     with open(name, 'r') as f :
         layout = f.read()
@@ -68,10 +67,8 @@ class Briefing :
         contentType = cfg.get("static", "contentType")
         if contentType == 'local':
             contentSource = cfg.get("static", "contentSource")
-            # print 'Info: looking for content in ' + contentSource
-            self.readContentFile(contentSource, cfg)
+            self.readContentFile(contentSource, cfg, 5)
         else:
-            # print 'Info: using rss source: ' + url
             url = cfg.get("static", "briefingUrl")
             briefConn = urlopen(url)
             briefing = briefConn.read()
@@ -88,9 +85,9 @@ class Briefing :
     def readContentFile(self, fileName, cfg, limit=5) :
         with open(fileName, 'r') as f :
             curArticle = None
+            numArticles = 0
             for line in f :
                 line = line.strip()
-                numArticles = 0
                 if line == '---' :
                     if curArticle :
                         curArticle.clamp(self.maxCharacters)
@@ -134,33 +131,30 @@ class Briefing :
         style = '<style>\n' + style + '\n</style>'
         return style
 
-    def printBriefingHTML(self) :
-        articles = self.articles
+    def headerHTML(self) :
         cfg = self.cfg
-        style = self.cssText()
         params = {
             'dateString': datetime.now().strftime('%B %d, %Y'),
             'CVerb': cfg.get("static", "CVerb"),
             'compiler': cfg.get("static", "Compiler") 
         }
-        headerHTML = loadPartial('layout', 'header', params)
+        return loadPartial('layout', 'header', params)
 
-        html = """
-        <table border="0" style="background-color:#FFFFFF; max-width: 960px; font-family: Calibri;" cellpadding="0" cellspacing="0">
-            <tr>
-                <td>
-                    """+headerHTML+"""
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%">"""
+    def printBriefingHTML(self) :
+        style = self.cssText()
+        headerHTML = self.headerHTML()
+        articles = self.articles
+        footerHTML = loadPartial('layout', 'footer')
 
+        articleHTML = ''
         for article in articles :
-            html += article.toHTML(cfg, 'rowWrapper')
+            articleHTML += article.toHTML(self.cfg, 'rowWrapper')
 
-        footer = loadPartial('layout', 'footer')
-        html += """
-                    </table>
-                    """ + footer + """
-                </td>
-            </tr>
-        </table>"""
-        return style + html
+        params = {
+            'style': style,
+            'header': headerHTML,
+            'articles': articleHTML,
+            'footer': footerHTML,
+        }
+        return loadPartial('layout', 'standard', params)
 
