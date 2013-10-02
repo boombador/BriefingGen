@@ -53,8 +53,9 @@ class Briefing :
             with open(entryFileName) as f :
                 entryList = CustomEntry(entryFileName)
                 todaysEntry = entryList.loadEntry()
-                self.articles.append(todaysEntry)
-                self.foundSpecialEntry = 1
+                if todaysEntry :
+                    self.articles.append(todaysEntry)
+                    self.foundSpecialEntry = 1
         except IOError:
             print 'Warning: Problem reading ' + entryFileName +', moving on...'
             self.foundSpecialEntry = 0
@@ -144,7 +145,7 @@ class Briefing :
         style = self.cssText()
         headerHTML = self.headerHTML()
         articles = self.articles
-        footerHTML = loadPartial('layout', 'footer')
+        footerHTML = loadPartial('layout', 'footer_teamdb')
 
         articleHTML = ''
         for article in articles :
