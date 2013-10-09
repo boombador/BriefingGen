@@ -145,7 +145,8 @@ class Briefing :
         style = self.cssText()
         headerHTML = self.headerHTML()
         articles = self.articles
-        footerHTML = loadPartial('layout', 'footer_teamdb')
+        footerName = self.cfg.get('static', 'footerfile');
+        footerHTML = loadPartial('layout', footerName)
 
         articleHTML = ''
         for article in articles :
