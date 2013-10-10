@@ -31,3 +31,13 @@ f = open(briefingFile, "w")
 f.write(html)
 f.close()
 
+os.chdir('..')
+
+# print version
+cfg.read("print.conf")
+brief = Briefing(cfg, cc)
+html = brief.printBriefingHTML()
+briefingFile = brief.getFileName(False, 'Print')
+f = open(briefingFile, "w")
+f.write(html)
+f.close()

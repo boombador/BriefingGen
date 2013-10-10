@@ -110,8 +110,8 @@ class Briefing :
                             prom = cfg.get('Default', 'prominence')
                         curArticle.prominence = prom
 
-    def getFileName(self, withDate=False) :
-        name = "BriefingEmail"
+    def getFileName(self, withDate=False, type="Email") :
+        name = "Briefing"+type
         if withDate :
             name += self.date
         name += ".html"
