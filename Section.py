@@ -34,7 +34,7 @@ def texify(str) :
     str = mathEscape.sub(r'$\1$', str)
     return str
 
-class Article :
+class Section :
     def __init__(self, title='', contributor='user', category='General', content='Empty post', href=None, xml=None, layout='article') :
         self.title = title
         self.contributor = contributor

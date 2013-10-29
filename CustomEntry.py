@@ -4,7 +4,7 @@ from datetime import datetime
 from ununicode import toascii
 from sys import *
 import re
-from Article import *
+from Section import *
 
 def texify(str) :
     simpleEscape = re.compile(r'([#$%&~_^{}|])')
@@ -75,6 +75,6 @@ class CustomEntry :
             if not category :
                 category = 'Next Jump Teachings'
             url = texify(toascii(ceSheet.cell_value(row, self.urlCol)))
-        self.article = Article("", name, category, practice, url, None, 'article')
+        self.article = Section("", name, category, practice, url, None, 'article')
         return self.article
 

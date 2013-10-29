@@ -9,7 +9,7 @@ import sys
 
 # yes
 from CustomEntry import *
-from Article import *
+from Section import *
 from bs4 import BeautifulSoup
 from urllib import urlopen
 from operator import attrgetter
@@ -49,21 +49,22 @@ class Briefing :
 
         # read special entries, originally the Daily Practices
         entryFileName = cfg.get("static", "entriesFile")
-        try:
-            with open(entryFileName) as f :
-                entryList = CustomEntry(entryFileName)
-                todaysEntry = entryList.loadEntry()
-                if todaysEntry :
-                    self.articles.append(todaysEntry)
-                    self.foundSpecialEntry = 1
-        except IOError:
-            print 'Warning: Problem reading ' + entryFileName +', moving on...'
-            self.foundSpecialEntry = 0
+        if entryFileName != 'none' :
             try:
-                self.readContentFile('entries.txt', cfg, 1)
-                self.foundSpecialEntry = 1
-            except:
+                with open(entryFileName) as f :
+                    entryList = CustomEntry(entryFileName)
+                    todaysEntry = entryList.loadEntry()
+                    if todaysEntry :
+                        self.articles.append(todaysEntry)
+                        self.foundSpecialEntry = 1
+            except IOError:
+                print 'Warning: Problem reading ' + entryFileName +', moving on...'
                 self.foundSpecialEntry = 0
+                try:
+                    self.readContentFile('entries.txt', cfg, 1)
+                    self.foundSpecialEntry = 1
+                except:
+                    self.foundSpecialEntry = 0
 
         contentType = cfg.get("static", "contentType")
         if contentType == 'local':
@@ -75,40 +76,39 @@ class Briefing :
             briefing = briefConn.read()
             soup = BeautifulSoup(briefing)
             for item in  soup.findAll('item', limit=5) :
-                newArticle = Article.from_item(item)
-                newArticle.clamp(self.maxCharacters)
-                self.articles.append(newArticle)
-
+                newSection = Section.from_item(item)
+                newSection.clamp(self.maxCharacters)
+                self.articles.append(newSection)
 
         # sort articles by prominence
         self.articles.sort(key=attrgetter('prominence'), reverse=True)
 
     def readContentFile(self, fileName, cfg, limit=5) :
         with open(fileName, 'r') as f :
-            curArticle = None
-            numArticles = 0
+            curSection = None
+            numSections = 0
             for line in f :
                 line = line.strip()
                 if line == '---' :
-                    if curArticle :
-                        curArticle.clamp(self.maxCharacters)
-                        self.articles.append(curArticle)
-                        numArticles += 1
-                    if numArticles >= limit :
+                    if curSection :
+                        curSection.clamp(self.maxCharacters)
+                        self.articles.append(curSection)
+                        numSections += 1
+                    if numSections >= limit :
                         return
-                    curArticle = Article()
+                    curSection = Section()
                 else :
                     index = line.find(':')
                     key = line[0:index]
                     val = line[index+2:]
-                    curArticle.setField(key, val)
+                    curSection.setField(key, val)
                     if key == 'category' :
                         hasProm = cfg.has_option(val, 'prominence')
                         if hasProm :
                             prom = cfg.get(val, 'prominence')
                         else :
                             prom = cfg.get('Default', 'prominence')
-                        curArticle.prominence = prom
+                        curSection.prominence = prom
 
     def getFileName(self, withDate=False, type="Email") :
         name = "Briefing"+type
