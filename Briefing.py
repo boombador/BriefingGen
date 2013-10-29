@@ -6,6 +6,7 @@ import re
 from cgi import escape
 import pprint
 import sys
+import os
 
 # yes
 from CustomEntry import *
@@ -39,23 +40,58 @@ def hexColor(str) :
 
 class Briefing :
     def __init__(self, cfg, cc=0) : 
-        self.date = datetime.now().strftime('%Y%m%d')
         self.cfg = cfg
-        self.articles = []
-        if not cc: 
-            self.maxCharacters = int(cfg.get('static', 'maxCharacters'))
-        else :
-            self.maxCharacters = cc
 
+        self.date = datetime.now().strftime('%Y%m%d')
+        self.sections = []
+        self.maxCharacters = cc
+
+    def readTheme(self) :
+        cfg = self.cfg
+        archive = cfg.get("toplevel", "archiveDir")
+        theme   = cfg.get("toplevel", "theme")
+
+        themeDir = '/themes/'+theme+'/'
+        root = os.getcwd()
+        self.themeDir = root + themeDir
+        self.archiveDir = root + '/' +archive+'/'
+
+        self.root = root
+
+    def parseTheme(self) :
+        os.chdir(self.themeDir)
+        cfg = self.cfg
+
+        cfg.read("static.conf")
+        cfg.read("categories.conf")
+        self.maxCharacters = int(cfg.get('static', 'maxCharacters'))
+
+        style = ''
+        with open(self.themeDir+'css/screen.css', 'r') as f :
+            content = f.read()
+            params = { 'media': 'print', 'content': content }
+            style += loadPartial('layout', 'css', params)
+
+        with open(self.themeDir+'css/print.css', 'r') as f :
+            content = f.read()
+            params = { 'media': 'print', 'content': content }
+            style += loadPartial('layout', 'css', params)
+        self.style = '<style>\n' + style + '\n</style>'
+
+        os.chdir(self.root)
+
+    def readContent(self) :
         # read special entries, originally the Daily Practices
+        cfg = self.cfg
         entryFileName = cfg.get("static", "entriesFile")
+        print os.getcwd()
         if entryFileName != 'none' :
             try:
                 with open(entryFileName) as f :
                     entryList = CustomEntry(entryFileName)
                     todaysEntry = entryList.loadEntry()
                     if todaysEntry :
-                        self.articles.append(todaysEntry)
+                        self.sections.append(todaysEntry)
                         self.foundSpecialEntry = 1
             except IOError:
                 print 'Warning: Problem reading ' + entryFileName +', moving on...'
@@ -78,10 +114,10 @@ class Briefing :
             for item in  soup.findAll('item', limit=5) :
                 newSection = Section.from_item(item)
                 newSection.clamp(self.maxCharacters)
-                self.articles.append(newSection)
+                self.sections.append(newSection)
 
-        # sort articles by prominence
-        self.articles.sort(key=attrgetter('prominence'), reverse=True)
+        # sort sections by prominence
+        self.sections.sort(key=attrgetter('prominence'), reverse=True)
 
     def readContentFile(self, fileName, cfg, limit=5) :
         with open(fileName, 'r') as f :
@@ -92,7 +128,7 @@ class Briefing :
                 if line == '---' :
                     if curSection :
                         curSection.clamp(self.maxCharacters)
-                        self.articles.append(curSection)
+                        self.sections.append(curSection)
                         numSections += 1
                     if numSections >= limit :
                         return
@@ -117,46 +153,41 @@ class Briefing :
         name += ".html"
         return name
 
-    def cssText(self) :
-        style = ''
-        with open('css/screen.css', 'r') as f :
-            content = f.read()
-            params = { 'media': 'print', 'content': content }
-            style += loadPartial('layout', 'css', params)
-
-        with open('css/print.css', 'r') as f :
-            content = f.read()
-            params = { 'media': 'print', 'content': content }
-            style += loadPartial('layout', 'css', params)
-
-        style = '<style>\n' + style + '\n</style>'
-        return style
-
     def headerHTML(self) :
         cfg = self.cfg
+        os.chdir(self.themeDir)
         params = {
             'dateString': datetime.now().strftime('%B %d, %Y'),
             'CVerb': cfg.get("static", "CVerb"),
             'compiler': cfg.get("static", "Compiler") 
         }
-        return loadPartial('layout', 'header', params)
+        html = loadPartial('layout', 'header', params)
+        os.chdir(self.root)
+        return html
 
     def printBriefingHTML(self) :
-        style = self.cssText()
+        if hasattr(self, 'style') :
+            style = self.style
         headerHTML = self.headerHTML()
-        articles = self.articles
+        sections = self.sections
+        os.chdir(self.themeDir)
         footerName = self.cfg.get('static', 'footerfile');
         footerHTML = loadPartial('layout', footerName)
+        os.chdir(self.root)
 
         articleHTML = ''
-        for article in articles :
-            articleHTML += article.toHTML(self.cfg, 'rowWrapper')
+        for section in sections :
+            articleHTML += section.toHTML(self.cfg, 'rowWrapper', self.themeDir)
 
+        os.chdir(self.themeDir)
         params = {
             'style': style,
             'header': headerHTML,
-            'articles': articleHTML,
+            'sections': articleHTML,
             'footer': footerHTML,
         }
-        return loadPartial('layout', 'standard', params)
+        html = loadPartial('layout', 'standard', params)
+        print html
+        os.chdir(self.root)
+        return html
 

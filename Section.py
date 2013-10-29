@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup, NavigableString
 from ununicode import toascii
 from HTMLParser import HTMLParser
+import os
 import re
 
 def loadPartial(partialType, partial, params=None) :
@@ -117,7 +118,7 @@ class Section :
     def url(self) :
         return self.href
 
-    def toHTML(self, cfg, containerApply=None) :
+    def toHTML(self, cfg, containerApply=None, themeDir=None) :
         categoryName = self.category
         submitterName = self.contributor
         articleText = self.content
@@ -160,8 +161,12 @@ class Section :
             'linkUrl': linkUrl,
             'imgurl': imgurl
         }
+        root = os.getcwd()
+        if themeDir :
+            os.chdir(themeDir)
         html = loadPartial('layout', self.layout, params)
         if containerApply :
             html = loadPartial('layout', containerApply, { 'content': html })
+        os.chdir(root)
         return html
 
