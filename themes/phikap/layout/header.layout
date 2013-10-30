@@ -2,14 +2,10 @@
 <!-- Header section table -->
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
-        <td width="480" style="font-family: Calibri;">
+        <td width="100%" style="text-align: center; font-family: Calibri; color: #CFB53B;">
             {{{ dateString }}}<br/>
-            Daily Briefing: {{{ CVerb }}} by {{{ compiler }}}<br/>
-            <a href="https://briefing.nextjump.com/">Daily Briefing Site</a><br/>
-            <a href="https://wiki.nextjump.com/wiki/index.php/Daily_Briefing">Daily Briefing Wiki</a>
-        </td>
-        <td width="480" valign="middle" align="right">
-            <img src="https://imga.nxjimg.com/secured/image/briefing/dblogo.jpg" width="300" height="65">
+            {{{ CVerb }}} by {{{ compiler }}}<br/>
+            Code available at <a href="https://github.com/boombador/NewsBetter">GitHub</a><br/>
         </td>
     </tr>
     <tr height="10">
