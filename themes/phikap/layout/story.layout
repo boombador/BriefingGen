@@ -1,0 +1,14 @@
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tbody>
+        <tr bgcolor="{{{ backgroundColor }}}">
+            <td width="25%">
+                <img src="{{{ imgurl }}}" width=80%"><br>
+                <b>{{{ categoryName }}}</b> -<br>
+                {{{ nameIntro }}} {{{ submitterName }}}
+            </td>
+            <td width="75%">
+                {{{ articleText }}}
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -10,9 +10,10 @@ def loadPartial(partialType, partial, params=None) :
         layout = f.read()
         if params :
             for key in params :
-                needle = '{{{ '+key+' }}}'
                 replace = params[key]
-                layout = layout.replace(needle, replace)
+                if replace :
+                    needle = '{{{ '+key+' }}}'
+                    layout = layout.replace(needle, replace)
         return layout
 
 
@@ -118,49 +119,47 @@ class Section :
     def url(self) :
         return self.href
 
+    def getDefault( self, cfg, option, optionalBackup=False ):
+        if cfg.has_option( 'Default', option ):
+            return cfg.get("Default", option )
+        return optionalBackup
+
     def toHTML(self, cfg, containerApply=None, themeDir=None) :
         categoryName = self.category
-        submitterName = self.contributor
-        articleText = self.content
-        articleTitle = self.title
-        linkUrl = self.href
-        imgBaseUrl = 'https://imga.nxjimg.com/secured/image/briefing/'
-        img = 'marketing.jpg'
-        barColor = cfg.get("Default", "barColor")
-        backgroundColor = cfg.get("Default", "backgroundColor")
-        imgBaseUrl = cfg.get("Default", "imBaseUrl")
-        img = cfg.get("Default", "img")
-        nameIntro = cfg.get("Default", "agentIntroPhrase");
+        params = {
+            'categoryName': categoryName.upper(),
+            'submitterName': self.contributor,
+            'articleTitle': self.title,
+            'articleText': self.content,
+            'linkUrl': self.href
+        }
+        params['barColor']        =  self.getDefault( cfg, 'barColor' )
+        params['backgroundColor'] =  self.getDefault( cfg, 'backgroundColor' )
+        params['imgBaseUrl']      =  self.getDefault( cfg, 'imgBaseUrl' )
+        params['img']             =  self.getDefault( cfg, 'img' )
+        params['nameIntro']       =  self.getDefault( cfg, 'nameIntro' )
         if cfg.has_section(categoryName):
             options = cfg.options(categoryName)
             for option in options :
                 val = cfg.get(categoryName, option)
-                if option == "barcolor":
-                    barColor = val
-                elif option == "backgroundcolor":
-                    backgroundColor = val
-                elif option == "imgbaseurl":
-                    imgBaseUrl = val
-                elif option == "img":
-                    img = val
-                elif option == "agentintrophrase":
-                    nameIntro = val
+                params[option] = val
+                #if option == "barcolor":
+                    #barColor = val
+                #elif option == "backgroundcolor":
+                    #backgroundColor = val
+                #elif option == "imgbaseurl":
+                    #imgBaseUrl = val
+                #elif option == "img":
+                    #img = val
+                #elif option == "agentintrophrase":
+                    #nameIntro = val
         if cfg.has_option(categoryName, 'layout') :
             self.layout = cfg.get(categoryName, 'layout')
         else :
             self.layout = cfg.get("Default", 'layout')
-        imgurl = imgBaseUrl + img
-        params = {
-            'categoryName': categoryName.upper(),
-            'nameIntro': nameIntro,
-            'submitterName': submitterName,
-            'articleTitle': articleTitle,
-            'articleText': articleText,
-            'barColor': barColor,
-            'backgroundColor': backgroundColor,
-            'linkUrl': linkUrl,
-            'imgurl': imgurl
-        }
+        if params['imgBaseUrl'] and params['img'] :
+            params['imgurl'] = params['imgBaseUrl'] + params['img']
+
         root = os.getcwd()
         if themeDir :
             os.chdir(themeDir)

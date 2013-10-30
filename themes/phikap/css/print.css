@@ -1,0 +1,47 @@
+table {
+    font-size: 11px;
+}
+.articleBar {
+    height: 20px;
+}
+.articleBar img {
+    height: 19px;
+    width: 24px;
+}
+.articleTitle {
+    font-size: 12px !important;
+}
+.readMoreLink {
+    display: none;
+}
+.articleBoxWrapper {
+    padding-bottom: 10px;
+}
+.articleBoxWrapper.noTitle {
+    padding-bottom: 18px;
+}
+.articleBox {
+    max-height: 130px;
+    overflow: hidden;
+    position: relative;
+}
+.noTitle .articleBox {
+    max-height:124px;
+}
+.overflowEllipsis {
+    display: block;
+    position: absolute;
+    right: 15;
+    bottom: 2;
+    background-color: #f4f5f4;
+    padding-left: 10px;
+}
+.noTitle .overflowEllipsis {
+    bottom: 0;
+}
+.articleBoxTopSpacer {
+    height: 5px;
+}
+.articleBoxBottomSpacer {
+    display: none;
+}

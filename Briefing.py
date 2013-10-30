@@ -84,7 +84,6 @@ class Briefing :
         # read special entries, originally the Daily Practices
         cfg = self.cfg
         entryFileName = cfg.get("static", "entriesFile")
-        print os.getcwd()
         if entryFileName != 'none' :
             try:
                 with open(entryFileName) as f :
@@ -187,7 +186,6 @@ class Briefing :
             'footer': footerHTML,
         }
         html = loadPartial('layout', 'standard', params)
-        print html
         os.chdir(self.root)
         return html
 
