@@ -125,6 +125,8 @@ class Section :
         return optionalBackup
 
     def toHTML(self, cfg, containerApply=None, themeDir=None) :
+
+        # define in section object
         categoryName = self.category
         params = {
             'categoryName': categoryName.upper(),
@@ -133,37 +135,29 @@ class Section :
             'articleText': self.content,
             'linkUrl': self.href
         }
+
+        # get the defaults (should have better way to do this)
         params['barColor']        =  self.getDefault( cfg, 'barColor' )
         params['backgroundColor'] =  self.getDefault( cfg, 'backgroundColor' )
         params['imgBaseUrl']      =  self.getDefault( cfg, 'imgBaseUrl' )
         params['img']             =  self.getDefault( cfg, 'img' )
         params['nameIntro']       =  self.getDefault( cfg, 'nameIntro' )
+        layout                    =  self.getDefault( cfg, 'layout' )
+
+        # read categories specific styling
         if cfg.has_section(categoryName):
             options = cfg.options(categoryName)
             for option in options :
-                val = cfg.get(categoryName, option)
-                params[option] = val
-                #if option == "barcolor":
-                    #barColor = val
-                #elif option == "backgroundcolor":
-                    #backgroundColor = val
-                #elif option == "imgbaseurl":
-                    #imgBaseUrl = val
-                #elif option == "img":
-                    #img = val
-                #elif option == "agentintrophrase":
-                    #nameIntro = val
-        if cfg.has_option(categoryName, 'layout') :
-            self.layout = cfg.get(categoryName, 'layout')
-        else :
-            self.layout = cfg.get("Default", 'layout')
+                params[option] = cfg.get(categoryName, option)
+
+        # set whole imgurl from parts
         if params['imgBaseUrl'] and params['img'] :
             params['imgurl'] = params['imgBaseUrl'] + params['img']
 
         root = os.getcwd()
         if themeDir :
             os.chdir(themeDir)
-        html = loadPartial('layout', self.layout, params)
+        html = loadPartial('layout', layout, params)
         if containerApply :
             html = loadPartial('layout', containerApply, { 'content': html })
         os.chdir(root)

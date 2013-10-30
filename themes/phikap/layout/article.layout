@@ -1,9 +1,9 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tbody>
         <tr height="30" bgcolor="{{{ barColor }}}" class="articleBar">
-            <td width="10%"> </td>
-            <td width="90%" style="color: white; font-family: Calibri;" class="articleBarText">
-                <b>{{{ categoryName }}}</b> - {{{ submitterName }}}
+            <td width="5%"> </td>
+            <td width="95%" style="color: white; font-family: Calibri;" class="articleBarText">
+                <b>{{{ categoryName }}}</b>
             </td>
         </tr>
         <tr>
