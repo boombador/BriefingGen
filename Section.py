@@ -129,19 +129,19 @@ class Section :
         # define in section object
         categoryName = self.category
         params = {
-            'categoryName': categoryName.upper(),
-            'submitterName': self.contributor,
-            'articleTitle': self.title,
-            'articleText': self.content,
-            'linkUrl': self.href
+            'categoryname': categoryName.upper(),
+            'submittername': self.contributor,
+            'articletitle': self.title,
+            'articletext': self.content,
+            'linkurl': self.href
         }
 
         # get the defaults (should have better way to do this)
-        params['barColor']        =  self.getDefault( cfg, 'barColor' )
-        params['backgroundColor'] =  self.getDefault( cfg, 'backgroundColor' )
-        params['imgBaseUrl']      =  self.getDefault( cfg, 'imgBaseUrl' )
+        params['barcolor']        =  self.getDefault( cfg, 'barColor' )
+        params['backgroundcolor'] =  self.getDefault( cfg, 'backgroundColor' )
+        params['imgbaseurl']      =  self.getDefault( cfg, 'imgBaseUrl' )
         params['img']             =  self.getDefault( cfg, 'img' )
-        params['nameIntro']       =  self.getDefault( cfg, 'nameIntro' )
+        params['nameintro']       =  self.getDefault( cfg, 'nameIntro' )
         layout                    =  self.getDefault( cfg, 'layout' )
 
         # read categories specific styling
@@ -151,8 +151,8 @@ class Section :
                 params[option] = cfg.get(categoryName, option)
 
         # set whole imgurl from parts
-        if params['imgBaseUrl'] and params['img'] :
-            params['imgurl'] = params['imgBaseUrl'] + params['img']
+        if params['imgbaseurl'] and params['img'] :
+            params['imgurl'] = params['imgbaseurl'] + params['img']
 
         root = os.getcwd()
         if themeDir :

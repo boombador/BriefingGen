@@ -1,13 +1,13 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tbody>
-        <tr bgcolor="{{{ backgroundColor }}}">
+        <tr bgcolor="{{{ backgroundcolor }}}">
             <td width="25%">
                 <img src="{{{ imgurl }}}" width=80%"><br>
-                <b>{{{ categoryName }}}</b> -<br>
-                {{{ nameIntro }}} {{{ submitterName }}}
+                <b>{{{ categoryname }}}</b> -<br>
+                {{{ nameintro }}} {{{ submittername }}}
             </td>
             <td width="75%">
-                {{{ articleText }}}
+                {{{ articletext }}}
             </td>
         </tr>
     </tbody>

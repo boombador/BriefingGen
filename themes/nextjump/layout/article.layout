@@ -1,15 +1,15 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tbody>
-        <tr height="30" bgcolor="{{{ barColor }}}" class="articleBar">
+        <tr height="30" bgcolor="{{{ barcolor }}}" class="articleBar">
             <td width="36">
                 <img src="{{{ imgurl }}}" width="36" height="30">
             </td>
             <td width="100%" style="color: white; font-family: Calibri;" class="articleBarText">
-                <b>{{{ categoryName }}}</b> - {{{ nameIntro }}} {{{ submitterName }}}
+                <b>{{{ categoryname }}}</b> - {{{ nameintro }}} {{{ submittername }}}
             </td>
         </tr>
         <tr>
-            <td colspan="2" bgcolor="{{{ backgroundColor }}}">
+            <td colspan="2" bgcolor="{{{ backgroundcolor }}}">
                 <div class="articleBoxWrapper">
                     <div class="articleBox">
                         <table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -18,14 +18,14 @@
                             </tr>
                             <tr><!-- Title row, not always needed -->
                                 <td width="15"></td>
-                                <td align="left" style="font-size: 18px; font-weight: 700;" class="articleTitle">{{{ articleTitle }}}</td>
+                                <td align="left" style="font-size: 18px; font-weight: 700;" class="articleTitle">{{{ articletitle }}}</td>
                                 <td width="15"></td>
                             </tr>
                             <tr height="5">
                             </tr>
                             <tr>
                                 <td width="15"></td>
-                                <td>{{{ articleText }}}</td>
+                                <td>{{{ articletext }}}</td>
                                 <td width="15"></td>
                             </tr>
                             <tr height="10" class="readMoreLink">
@@ -33,7 +33,7 @@
                             </tr>
                             <tr class="readMoreLink">
                                 <td></td>
-                                <td align="left"><a href="{{{ linkUrl }}}">Read More</a>
+                                <td align="left"><a href="{{{ linkurl }}}">Read More</a>
                                 </td>
                                 <td></td>
                             </tr>
