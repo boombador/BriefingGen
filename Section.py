@@ -128,12 +128,25 @@ class Section :
 
         # define in section object
         categoryName = self.category
+        href = self.href
+        text = self.content
+        print(text)
+        start = text.find('Via:')
+        if start != -1:
+            end = text.find('\n', start)
+            if end == -1:
+                line = text[start:]
+            else:
+                line = text[start:end]
+            href = line[len('Via:'):].strip()
+            print("new href "+ href)
+            text = text.replace(line, '')
         params = {
             'categoryname': categoryName.upper(),
             'submittername': self.contributor,
             'articletitle': self.title,
-            'articletext': self.content,
-            'linkurl': self.href
+            'articletext': text,
+            'linkurl': href
         }
 
         # get the defaults (should have better way to do this)
